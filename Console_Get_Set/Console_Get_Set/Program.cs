@@ -12,13 +12,13 @@ namespace Console_Get_Set
         //в проекте на клауде
         static readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
         static readonly string ApplicationName = "Legistrators";//произвольно
-        static readonly string SpreadsheetID = "1kcFJyXxEexrB0pUtM0353QFHrzKqD4e6LQaZUVHOqLY";//в ссылке на лист
-        static readonly string sheet = "congress";//имя листа (не таблицы)
+        static readonly string SpreadsheetID = "1HB4k716lcyBiOtpN_bk4RE7c4ZNK6QVwsYcOgl0HU4w";//в ссылке на лист
+        static readonly string[] sheets = new string[3] {"Data","Timing","Информация по иону"};//имя листа (не таблицы)
         static SheetsService service;//Объект для работы собсно с листиками
         static void Main(string[] args)
         {
             GoogleCredential credential;//Права 
-            using (var stream = new FileStream("client-secrets.json", FileMode.Open, FileAccess.Read))
+            using (FileStream stream = new FileStream("client-secrets.json", FileMode.Open, FileAccess.Read))
             {
                 credential = GoogleCredential.FromStream(stream)
                     .CreateScoped(Scopes);
@@ -29,19 +29,14 @@ namespace Console_Get_Set
                 HttpClientInitializer = credential,
                 ApplicationName = ApplicationName,
             });
+            ReadEntries(sheets[0], SpreadsheetID, "!A1:G10");
+            Console.ReadKey();
 
-            ReadEntries();//Диапазон A1:F10, вывод F,E,D,B
-            Console.ReadKey();
-            CreateEntry();//Нижняя свободная строка, диапазон A:F
-            Console.ReadKey();
-            UpdateEntry();//D543 значение "updated", не работает на диапазоне, думаю и не надо
-            Console.ReadKey();
-            DeleteEntry();//Удаление строки A543:F543;
-            Console.ReadKey();
+            
         }
-        static void ReadEntries()
+        static void ReadEntries(string sheet, string SpreadsheetID, string Range)
         {
-            var range = $"{sheet}!A1:F10";//Тут любой рендж
+            string range = $"{sheet}{Range}";//Тут любой рендж
             var readRequest = service.Spreadsheets.Values.Get(SpreadsheetID, range);//Повторяется везде, меняется только метод
 
             var response = readRequest.Execute();//Завершает реквест и передаёт результат для дальнейшей работы
@@ -50,7 +45,11 @@ namespace Console_Get_Set
             {
                 foreach (var row in values)
                 {
-                    Console.WriteLine("{0} {1} | {2} | {3}", row[5], row[4], row[3], row[1]);
+                    Console.WriteLine("\n");
+                    foreach(string rowitem in row)
+                    {
+                        Console.Write(rowitem+"|");
+                    }
                     //Вид вывода, нам особо не понадобится, мы в консоли выводить не будем вроде
                     //Сразу будем пихать в пдф, разве что для понимания - values - лист листов
                     //Поэтому можно либо без форича обращаться как к двумерному массиву,
@@ -63,12 +62,12 @@ namespace Console_Get_Set
                 Console.WriteLine("No data found");
             }
         }
-        static void CreateEntry()
+        static void CreateEntry(string sheet, string SpreadsheetID, string Range)
         {
-            var range = $"{sheet}!A:F";//Специфичный ренж, вставляется вниз, поэтому номер строки не нужен
-            var valueRange = new ValueRange();
+            string range = $"{sheet}{Range}";//Специфичный ренж, вставляется вниз, поэтому номер строки не нужен
+            ValueRange valueRange = new ValueRange();
 
-            var objectList = new List<object>() { "Hello", "Pomogite", "Pls", "Ya", "Hochu", "Umeret" };
+            List<object> objectList = new List<object>() { "Hello", "Pomogite", "Pls", "Ya", "Hochu", "Umeret" };
             valueRange.Values = new List<IList<object>> { objectList };//Собсно что писать будем
 
             var appendRequest = service.Spreadsheets.Values.Append(valueRange, SpreadsheetID, range);
@@ -76,23 +75,23 @@ namespace Console_Get_Set
             //Опция парса, это стандартный парс, числовые переменные так и останутся, а строки могут парсится в даты, числа etc
             var appendResponse = appendRequest.Execute();//Завершает реквест и передаёт результат для дальнейшей работы
         }
-        static void UpdateEntry()
+        static void UpdateEntry(string sheet, string SpreadsheetID, string Cell)
         {
-            var range = $"{sheet}!A540";
-            var valueRange = new ValueRange();
+            string range = $"{sheet}{Cell}";
+            ValueRange valueRange = new ValueRange();
 
-            var objectList = new List<object>() { "updated" };
+            List<object> objectList = new List<object>() { "updated" };
             valueRange.Values = new List<IList<object>> { objectList };
 
             var updateRequest = service.Spreadsheets.Values.Update(valueRange, SpreadsheetID, range);
             updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
             var updateResponse = updateRequest.Execute();
         }
-        static void DeleteEntry()
+        static void DeleteEntry(string sheet, string SpreadsheetID, string Range)
         {
-            var range = $"{sheet}!A540:F541";//Судя по тестам любой ренж, и строка не поднимается
+            string range = $"{sheet}{Range}";//Судя по тестам любой ренж, и строка не поднимается
             //Эквиваленто апдейту на пустую строку получается
-            var requestBody = new ClearValuesRequest();
+            ClearValuesRequest requestBody = new ClearValuesRequest();
 
             var deleteRequest = service.Spreadsheets.Values.Clear(requestBody, SpreadsheetID, range);
             var deleteResponse = deleteRequest.Execute();
