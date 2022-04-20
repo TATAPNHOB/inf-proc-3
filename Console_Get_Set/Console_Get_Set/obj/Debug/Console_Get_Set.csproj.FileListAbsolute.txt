@@ -23,3 +23,28 @@ C:\Users\ivanb\Desktop\Учёба\2 курс 2 сем\САОД\Console_Get_Set\C
 C:\Users\ivanb\Desktop\Учёба\2 курс 2 сем\САОД\Console_Get_Set\Console_Get_Set\obj\Debug\Console_Get_Set.csproj.CopyComplete
 C:\Users\ivanb\Desktop\Учёба\2 курс 2 сем\САОД\Console_Get_Set\Console_Get_Set\obj\Debug\Console_Get_Set.exe
 C:\Users\ivanb\Desktop\Учёба\2 курс 2 сем\САОД\Console_Get_Set\Console_Get_Set\obj\Debug\Console_Get_Set.pdb
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Console_Get_Set.exe.config
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Console_Get_Set.exe
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Console_Get_Set.pdb
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Google.Apis.Auth.dll
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Google.Apis.Auth.PlatformServices.dll
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Google.Apis.Core.dll
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Google.Apis.dll
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Google.Apis.PlatformServices.dll
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Google.Apis.Sheets.v4.dll
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Newtonsoft.Json.dll
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Google.Apis.pdb
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Google.Apis.xml
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Google.Apis.Auth.pdb
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Google.Apis.Auth.xml
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Google.Apis.Core.pdb
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Google.Apis.Core.xml
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Google.Apis.Sheets.v4.pdb
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Google.Apis.Sheets.v4.xml
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\bin\Debug\Newtonsoft.Json.xml
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\obj\Debug\Console_Get_Set.csproj.AssemblyReference.cache
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\obj\Debug\Console_Get_Set.csproj.SuggestedBindingRedirects.cache
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\obj\Debug\Console_Get_Set.csproj.CoreCompileInputs.cache
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\obj\Debug\Console_Get_Set.csproj.CopyComplete
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\obj\Debug\Console_Get_Set.exe
+C:\Users\ivanb\Documents\GitHub\inf-proc-3\Console_Get_Set\Console_Get_Set\obj\Debug\Console_Get_Set.pdb
