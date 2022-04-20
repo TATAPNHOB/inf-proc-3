@@ -23,6 +23,7 @@ namespace PDFreport1
 			XFont font = new XFont("Arial", 11);
 			XFont font1 = new XFont("Times New Roman", 11, XFontStyle.Bold);
 			XFont font2 = new XFont("Times New Roman", 14);
+			XFont font3 = new XFont("Arial", 8);
 
 			//1.ОБЩИЕ СВЕДЕНИЯ О СЕАНСЕ
 			g.DrawString("ЗНАЧ", font, XBrushes.Black,
@@ -46,7 +47,9 @@ namespace PDFreport1
 				new XRect(50 + 81 + 119+119, 236.5, 119, 14.85), XStringFormats.Center); //толщина
 			//3.ХАРАКТЕРИСТИКИ ИОНА
 			g.DrawString("ЗНАЧ", font, XBrushes.Black,
-				new XRect(50, 310, 81, 14.85), XStringFormats.Center); //тип иона
+				new XRect(50, 310, 81/2, 14.85), XStringFormats.CenterRight);//тип иона
+			g.DrawString("000", font3, XBrushes.Black,
+				new XRect(50+81/2, 310, 81/2, 14.85), XStringFormats.TopLeft);//номер для иона
 			g.DrawString("ЗНАЧ", font, XBrushes.Black,
 				new XRect(50+81, 310, 179, 14.85), XStringFormats.Center); //энергия Е на поверхности
 			g.DrawString("ЗНАЧ", font, XBrushes.Black,
