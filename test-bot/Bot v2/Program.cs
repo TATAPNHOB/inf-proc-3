@@ -1,3 +1,4 @@
+using BotManager;
 using System.Collections.Generic;
 using Telegram.Bot;
 using System.Net;
@@ -7,6 +8,7 @@ using Telegram.Bot.Extensions.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using Telegram.Bot.Types.Enums;
+
 
 
 /*
@@ -22,7 +24,14 @@ using var cts = new CancellationTokenSource();
 
 
 //список пользователей, работающих сейчас с ботом и на каком шаге они находятся в "сценарии"
-Dictionary<long, int> currentUsers = new Dictionary<long, int>();
+//Dictionary<long, int> currentUsers = new Dictionary<long, int>();
+Dictionary<long, botUser> currentUsers = new Dictionary<long, botUser>();
+
+//список попыток для ввода логинов/паролей
+Dictionary<long, int> currentUsers_tries = new Dictionary<long, int>();
+//максимум 5 пусть
+
+
 /*step:
     0 - default logged status
     1 - default unlogged status
@@ -85,13 +94,13 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
         return;
     
     long chatId = update.Message.Chat.Id;
-    if (!currentUsers.ContainsKey(chatId)) currentUsers.Add(chatId, 1);
+    if (!currentUsers.ContainsKey(chatId)) currentUsers.Add(chatId, new botUser(chatId));
 
-    if (currentUsers[chatId] != 0) { }
+    
 
 
     var messageText = update.Message.Text;
-    switch (currentUsers[chatId])
+    switch (currentUsers[chatId].step)
     {
         case 0:
             DefaultScenery(chatId, messageText);
@@ -124,16 +133,28 @@ async void DefaultScenery(long chatId, string messageText)
 {
     switch (messageText)
     {
-        case "/help":
+        case "Чтение":
             sentMessage = await botClient.SendTextMessageAsync(
                 chatId: chatId,
-                text: "Выберите действие",
-                replyMarkup: keyboard_Main);
+                text: ""/*,
+                replyMarkup: */);
             //Console.WriteLine("Запрошено: авторизация");
             break;
 
+        case "Изменение":
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: ""/*,
+                replyMarkup: */);
+            //Console.WriteLine("Запрошено: авторизация");
+            break;
 
         default:
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Некорректная команда. \nВыберите действие",
+                replyMarkup: keyboard_Main);
+            //Console.WriteLine("Запрошено: авторизация");
             break;
     }
 }
@@ -157,7 +178,7 @@ async void DefaultUnloggedScenery (long chatId, string messageText)
                 text: "Введите логин:",
                 replyMarkup: keyboardToRemove);
             Console.WriteLine($"{chatId}: запрошена авторизация");
-            currentUsers[chatId] = 2;
+            currentUsers[chatId].step = 2;
             break;
 
         default:
@@ -186,7 +207,7 @@ async void Authorization_Login(long chatId, string login_input)
         if (login == login_input)
         { 
             //переходим для этого пользователя на новый сценарий - ввод пароль
-            currentUsers[chatId] = 3;
+            currentUsers[chatId].step = 3;
             //также записываем, какой логин он ввёл
             passwordRequest[chatId] = login;
             sentMessage = await botClient.SendTextMessageAsync(
@@ -227,9 +248,10 @@ async void Authorization_Password(long chatId, string password_input)
         {
             sentMessage = await botClient.SendTextMessageAsync(
                 chatId: chatId,
-                text: "Вы успешно вошли");
+                text: "Вы успешно вошли",
+                replyMarkup: keyboard_Main);
             Console.WriteLine($"{chatId} авторизировался");
-            currentUsers[chatId] = 0;
+            currentUsers[chatId].step = 0;
             return;
         }
         else
