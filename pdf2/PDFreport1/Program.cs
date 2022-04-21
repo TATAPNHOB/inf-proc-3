@@ -91,8 +91,8 @@ namespace PDFreport1
 
 			g.DrawString("000", font1, XBrushes.Black,
 				new XRect(735.5, 98.5, 20, 9.5), XStringFormats.Center); //номер сеанса
-			g.DrawString("000", font2, XBrushes.Black,
-				new XRect(755.5, 80.5, 18, 10), XStringFormats.Center); //номер сеанса в ТЗЧ ляляля
+			g.DrawString("TЗЧ/" + "0000" + "-" + "ЗН" + "-" + "00" + "/" + "00" + "-" + "000", font2, XBrushes.Black,
+				new XRect(662, 79, 115, 13), XStringFormats.Center); ; //ТЗЧ/...
 			g.DrawString("0,00", font, XBrushes.Black,
 				new XRect(669.5, 316.5, 44, 12), XStringFormats.Center); //K
 			g.DrawString("0,00", font, XBrushes.Black,
