@@ -95,6 +95,8 @@ namespace PDFreport1
 				new XRect(748, 327, 46.5, 12), XStringFormats.Center); //K погрешность
 			g.DrawString("0/00", font, XBrushes.Black,
 				new XRect(659, 359, 46.5, 12), XStringFormats.Center); //номер протокола допуска
+			g.DrawString("0,00", font, XBrushes.Black,
+				new XRect(660, 385, 46.5, 12), XStringFormats.Center); //K факт
 
 			doc.Save("C:\\Users\\соня\\Desktop\\pdf\\Test.pdf"); //путь, куда сохранять док
 		}
