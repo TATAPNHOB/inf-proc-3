@@ -1,10 +1,19 @@
-﻿using Telegram.Bot;
+using System.Collections.Generic;
+using Telegram.Bot;
+using System.Net;
+using System.Net.Mail;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Extensions.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using Telegram.Bot.Types.Enums;
-using System.Collections.Generic;
+
+
+/*
+ -ввести количество попыток авторизации
+ -шифрануть файлик с паролями и логинами
+ */
+
 
 //@heheTon_bot
 var botClient = new TelegramBotClient("5057524859:AAGDp0kc2ILs0yvuo7BtYAr_4Ea_E10OKH0");
@@ -25,6 +34,22 @@ Dictionary<long, int> currentUsers = new Dictionary<long, int>();
 после ввода логина, логин сохраняется в этом ассоциативном массивчике, 
     чтобы сопоставить етот логин с вводимым паролем
 */
+
+
+//клавиатура для авторизции
+ReplyKeyboardMarkup keyboard_Request = new(
+new KeyboardButton ("Авторизация"));
+
+//клавиатура залогиненного пользователя
+ReplyKeyboardMarkup keyboard_Main = new(new[] {
+new KeyboardButton("Чтение"),
+new KeyboardButton("Изменение"),});
+
+//
+ReplyKeyboardRemove keyboardToRemove = new ReplyKeyboardRemove();
+
+
+
 Dictionary<long, string> passwordRequest = new Dictionary<long, string>();
 
 
@@ -39,6 +64,7 @@ botClient.StartReceiving(
     cancellationToken: cts.Token);
 
 var me = await botClient.GetMeAsync();
+
 
 Console.ReadLine();
 
@@ -57,16 +83,21 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
     // и только текстовые
     if (update.Message!.Type != MessageType.Text)
         return;
-
+    
     long chatId = update.Message.Chat.Id;
     if (!currentUsers.ContainsKey(chatId)) currentUsers.Add(chatId, 1);
+
+    if (currentUsers[chatId] != 0) { }
 
 
     var messageText = update.Message.Text;
     switch (currentUsers[chatId])
     {
-        case 1:
+        case 0:
             DefaultScenery(chatId, messageText);
+            break;
+        case 1:
+            DefaultUnloggedScenery(chatId, messageText);
             break;
         case 2:
             Authorization_Login(chatId, messageText);
@@ -87,6 +118,8 @@ sentMessage = await botClient.SendTextMessageAsync(
     cancellationToken: cancellationToken);*/
 }
 
+
+//сценарий залогиненного пользователя
 async void DefaultScenery(long chatId, string messageText)
 {
     switch (messageText)
@@ -94,14 +127,35 @@ async void DefaultScenery(long chatId, string messageText)
         case "/help":
             sentMessage = await botClient.SendTextMessageAsync(
                 chatId: chatId,
-                text: "Команды: \n Авторизация (кратко: авто)");
+                text: "Выберите действие",
+                replyMarkup: keyboard_Main);
+            //Console.WriteLine("Запрошено: авторизация");
+            break;
+
+
+        default:
+            break;
+    }
+}
+
+//сценарий, если пользователь неавторизирован
+async void DefaultUnloggedScenery (long chatId, string messageText)
+{
+    switch (messageText)
+    {
+        case "/help":
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Чтобы войти в систему напишите:\n Авторизация",
+                replyMarkup: keyboard_Request);
             //Console.WriteLine("Запрошено: авторизация");
             break;
 
         case "Авторизация":
             sentMessage = await botClient.SendTextMessageAsync(
                 chatId: chatId,
-                text: "Введите логин:");
+                text: "Введите логин:",
+                replyMarkup: keyboardToRemove);
             Console.WriteLine($"{chatId}: запрошена авторизация");
             currentUsers[chatId] = 2;
             break;
@@ -109,7 +163,8 @@ async void DefaultScenery(long chatId, string messageText)
         default:
             sentMessage = await botClient.SendTextMessageAsync(
                 chatId: chatId,
-                text: "Пропишите /help");
+                text: "Пропишите /help",
+                replyMarkup: keyboard_Request);
             Console.WriteLine($"{chatId}: Введена некорректная команда.");
             break;
     }
@@ -125,11 +180,11 @@ async void Authorization_Login(long chatId, string login_input)
     {
         //ожидается, что в файле строка будет выглядеть как два слова
         //где первое слово - логин, а второе - пароль
-
+        
         login = line.Split(' ')[0];
 
         if (login == login_input)
-        {
+        { 
             //переходим для этого пользователя на новый сценарий - ввод пароль
             currentUsers[chatId] = 3;
             //также записываем, какой логин он ввёл
@@ -142,7 +197,7 @@ async void Authorization_Login(long chatId, string login_input)
             //нашли логин => запрашиваем пароль
         }
         line = sr.ReadLine();
-
+        
     }
     //если логин не нашли, то тыкаем юзера
 
@@ -163,7 +218,7 @@ async void Authorization_Password(long chatId, string password_input)
     {
         //ожидается, что в файле строка будет выглядеть как два слова
         //где первое слово - логин, а второе - пароль
-
+        
 
         login = line.Split(' ')[0];
         password = line.Split(' ')[1];
@@ -189,8 +244,42 @@ async void Authorization_Password(long chatId, string password_input)
     }
     //если логин не нашли, то тыкаем юзера
 
-
+   
     //не продуман случай, если юзер захочет выйти из ввода логина
+}
+
+
+//метод отправки на email
+static async Task SendReportAsync(long chatId)
+{
+    MailAddress from = new MailAddress("hehhahbot@gmail.com", "Hehebot");
+    MailAddress to = new MailAddress("lai.20@uni-dubna.ru");
+    MailMessage m = new MailMessage(from, to);
+
+    //тема письма
+    m.Subject = "Отчетный документ";
+
+    //текст письма
+    m.Body = "Протокол допуска/протокол мониторинга";
+
+    //прикрепляем документ отчета
+    m.Attachments.Add(new Attachment(@"..\..\..\..\cat.pdf"));
+
+
+    // адрес smtp-сервера и порт, с которого отправляется письмо
+    SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+
+    //логин и пароль
+    smtp.Credentials = new NetworkCredential("hehhahbot@gmail.com", "sdif@jfds331kmlfdsk12290847501213F");
+
+    smtp.EnableSsl = true;
+    //отправка
+    await smtp.SendMailAsync(m);
+    Console.WriteLine($"{chatId}: Письмо отправлено");
+
+    /*
+     вызов метода:
+        SendReportAsync().GetAwaiter();*/
 }
 
 
