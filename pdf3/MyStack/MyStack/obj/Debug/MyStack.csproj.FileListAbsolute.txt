@@ -1,0 +1,10 @@
+C:\Users\соня\source\repos\MyStack\MyStack\bin\Debug\MyStack.exe.config
+C:\Users\соня\source\repos\MyStack\MyStack\bin\Debug\MyStack.exe
+C:\Users\соня\source\repos\MyStack\MyStack\bin\Debug\MyStack.pdb
+C:\Users\соня\source\repos\MyStack\MyStack\obj\Debug\MyStack.csprojAssemblyReference.cache
+C:\Users\соня\source\repos\MyStack\MyStack\obj\Debug\MyStack.Form1.resources
+C:\Users\соня\source\repos\MyStack\MyStack\obj\Debug\MyStack.Properties.Resources.resources
+C:\Users\соня\source\repos\MyStack\MyStack\obj\Debug\MyStack.csproj.GenerateResource.cache
+C:\Users\соня\source\repos\MyStack\MyStack\obj\Debug\MyStack.csproj.CoreCompileInputs.cache
+C:\Users\соня\source\repos\MyStack\MyStack\obj\Debug\MyStack.exe
+C:\Users\соня\source\repos\MyStack\MyStack\obj\Debug\MyStack.pdb
