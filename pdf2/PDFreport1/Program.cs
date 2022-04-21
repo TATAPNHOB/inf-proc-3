@@ -36,7 +36,9 @@ namespace PDFreport1
 				new XRect(66 + 70 + 121+182, 160.5, 121, 18), XStringFormats.Center); //Время начала облучения
 			g.DrawString("ЗНАЧ", font, XBrushes.Black,
 				new XRect(66 + 70 + 121 + 182+121, 160.5, 108, 18), XStringFormats.Center);  //Длительность
-			//2.УСЛОВИЯ ЭКСПЕРИМЕНТА: В СРЕДЕ ВАКУУМ
+			//2
+			g.DrawString("знач", font1, XBrushes.Black,
+				new XRect(232, 181, 100, 12), XStringFormats.CenterLeft); //среда(нет блин вторник)
 			g.DrawString("ЗНАЧ", font, XBrushes.Black,
 				new XRect(66, 224, 70, 17), XStringFormats.Center); //угол
 			g.DrawString("ЗНАЧ", font, XBrushes.Black,
