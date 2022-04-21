@@ -1,4 +1,4 @@
-﻿using BotManager;
+using BotManager;
 using System.Collections.Generic;
 using Telegram.Bot;
 using System.Net;
@@ -26,10 +26,6 @@ using var cts = new CancellationTokenSource();
 //список пользователей, работающих сейчас с ботом и на каком шаге они находятся в "сценарии"
 //Dictionary<long, int> currentUsers = new Dictionary<long, int>();
 Dictionary<long, botUser> currentUsers = new Dictionary<long, botUser>();
-
-//список попыток для ввода логинов/паролей
-Dictionary<long, int> currentUsers_tries = new Dictionary<long, int>();
-//максимум 5 пусть
 
 
 /*step:
@@ -185,6 +181,14 @@ async void DefaultUnloggedScenery (long chatId, string messageText)
             break;
 
         case "Авторизация":
+            if (currentUsers[chatId].IsBanned)
+            {
+                sentMessage = await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Вы временно заблокированы \nиз-за подозрительных попыток входа!",
+                replyMarkup: keyboardToRemove);
+                return;
+            }
             sentMessage = await botClient.SendTextMessageAsync(
                 chatId: chatId,
                 text: "Введите логин:",
@@ -243,9 +247,10 @@ async void Authorization_Login(long chatId, string login_input)
     currentUsers[chatId].tries++;
 
     //баним временно пользователя, если он слишком много раз пробует войти
-    if (currentUsers[chatId].tries>5)
+    if (currentUsers[chatId].tries%5==0)
     {
         currentUsers[chatId].banDate = DateTime.Now;
+        currentUsers[chatId].step = 1;
     }
     //не продуман случай, если юзер захочет выйти из ввода логина
 }
@@ -278,10 +283,23 @@ async void Authorization_Password(long chatId, string password_input)
         }
         else
         {
+
             sentMessage = await botClient.SendTextMessageAsync(
                 chatId: chatId,
                 text: "Пароль неверен. \nПопробуй ввести его заново!");
             Console.WriteLine($"{chatId} отказано в пароле");
+
+
+            //увеличиваем количество провальных попыток входа
+            currentUsers[chatId].tries++;
+
+            //баним временно пользователя, если он слишком много раз пробует войти
+            if (currentUsers[chatId].tries%5 == 0)
+            {
+                currentUsers[chatId].banDate = DateTime.Now;
+                currentUsers[chatId].step = 1;
+            }
+
         }
         line = sr.ReadLine();
 
