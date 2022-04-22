@@ -59,8 +59,17 @@ namespace Console_Get_Set
         {
             List<int> row_num = new List<int>();
             IList<IList<object>> Search_index_list = ReadEntries(sheets[0], SpreadsheetID, $"!A3:A{action_count}"); //столбец с номерами
-            int starting_seance = Convert.ToInt32(action_interval.Split('-')[0]);
-            int ending_seance = Convert.ToInt32(action_interval.Split('-')[1]); // что если придет что-то другое?
+            int starting_seance;
+            int ending_seance;
+            if (!action_interval.Contains("-"))
+            {
+                starting_seance = ending_seance = Convert.ToInt32(action_interval); //пришло одно число
+            }
+            else 
+            { 
+                starting_seance = Convert.ToInt32(action_interval.Split('-')[0]); //диапазон
+                ending_seance = Convert.ToInt32(action_interval.Split('-')[1]);
+            }
 
             bool seance_mode = false;
             for (int i = 0; i < Search_index_list.Count; i++)
