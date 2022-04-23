@@ -1,4 +1,4 @@
-using BotManager;
+﻿using BotManager;
 using System.Collections.Generic;
 using Telegram.Bot;
 using System.Net;
