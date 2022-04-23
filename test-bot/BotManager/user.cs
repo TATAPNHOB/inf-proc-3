@@ -10,7 +10,7 @@ namespace BotManager
     internal class botUser
     {
         long id;
-
+        public string email;
         //5 минут
         TimeSpan dif = new TimeSpan(0,5,0);
 

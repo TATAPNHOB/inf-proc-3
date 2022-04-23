@@ -8,6 +8,7 @@ using Telegram.Bot.Extensions.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.InputFiles;
 
 
 
@@ -33,6 +34,8 @@ Dictionary<long, botUser> currentUsers = new Dictionary<long, botUser>();
     1 - default unlogged status
     2 - login request
     3 - password request
+    20 - report email request (1)
+    21 - report attachment request
  */
 
 /*костыль 
@@ -50,10 +53,12 @@ ReplyKeyboardMarkup keyboard_Main = new(new[] {
 new KeyboardButton("Чтение"),
 new KeyboardButton("Изменение"),});
 
+ReplyKeyboardMarkup keyboard_yn = new(new[] {
+new KeyboardButton("Да"),
+new KeyboardButton("Нет"),});
+
 //
 ReplyKeyboardRemove keyboardToRemove = new ReplyKeyboardRemove();
-
-
 
 Dictionary<long, string> passwordRequest = new Dictionary<long, string>();
 
@@ -62,7 +67,6 @@ var receiverOptions = new ReceiverOptions
 {
     AllowedUpdates = { } // получение всех типов обновлений
 };
-
 
 botClient.StartReceiving(
     HandleUpdateAsync,
@@ -77,12 +81,6 @@ Console.ReadLine();
 
 // Отправляет реквест отмены чтобы остановить бота
 cts.Cancel();
-
-
-
-
-
-
 
 Message sentMessage;
 
@@ -103,10 +101,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
 
     var messageText = update.Message.Text;
     switch (currentUsers[chatId].step)
-    {
-        case 0:
-            DefaultScenery(chatId, messageText);
-            break;
+    {  
 
         case 1:
             DefaultUnloggedScenery(chatId, messageText);
@@ -121,6 +116,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
             break;
 
         default:
+            DefaultScenery(chatId, messageText);
             break;
     }
 
@@ -137,20 +133,58 @@ sentMessage = await botClient.SendTextMessageAsync(
 //сценарий залогиненного пользователя
 async void DefaultScenery(long chatId, string messageText)
 {
+    if (currentUsers[chatId].step==20)
+    {
+        switch (messageText)
+        {
+            case "Да":
+                sheetsTool.Proccess();//внутрь конструктора айдишник для создания папки под пользователя временную
+                SendReportAsync(chatId, currentUsers[chatId].email);
+                break;
+        }
+        sentMessage = await botClient.SendTextMessageAsync(
+               chatId: chatId,
+               text: "Чтобы результат отправился в чат?",
+               replyMarkup: keyboard_yn);
+        currentUsers[chatId].step = 21;
+        return;
+    }
+
+    if (currentUsers[chatId].step == 21)
+    { 
+        
+        switch (messageText)
+        {
+            case "Да":
+                /*sentMessage = await botClient.SendDocumentAsync(
+    chatId: chatId,
+    document: @"..\..\..\..\PDFresult\Test{ actual_index + 1}.pdf");
+                sentMessage = await botClient.SendDocumentAsync(chatId: chatId,
+                    document: new InputTelegramFile(new FileStream(@"..\..\..\..\PDFresult\Test{ actual_index + 1}.pdf", FileMode.Open, FileAccess.Read))
+                    , null));*/
+                break;
+        }
+        currentUsers[chatId].step = 0;
+        return;
+    }
+
     switch (messageText)
     {
         case "Чтение":
             sentMessage = await botClient.SendTextMessageAsync(
                 chatId: chatId,
-                text: ""/*,
-                replyMarkup: */);
+                text: "Хотите, чтобы результат отправился на email?",
+                replyMarkup: keyboard_yn);
             //Console.WriteLine("Запрошено: авторизация");
+            
+           
+            currentUsers[chatId].step = 20;
             break;
 
         case "Изменение":
             sentMessage = await botClient.SendTextMessageAsync(
                 chatId: chatId,
-                text: ""/*,
+                text: "Пока ничего не делаю("/*,
                 replyMarkup: */);
             //Console.WriteLine("Запрошено: авторизация");
             break;
@@ -199,10 +233,9 @@ async void DefaultUnloggedScenery (long chatId, string messageText)
 
         default:
             sentMessage = await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: "Пропишите /help",
-                replyMarkup: keyboard_Request);
-            Console.WriteLine($"{chatId}: Введена некорректная команда.");
+                 chatId: chatId,
+                 text: "Некорректная команда. \nВыберите действие",
+                 replyMarkup: keyboard_Request);
             break;
     }
 }
@@ -278,6 +311,7 @@ async void Authorization_Password(long chatId, string password_input)
                 text: "Вы успешно вошли",
                 replyMarkup: keyboard_Main);
             Console.WriteLine($"{chatId} авторизировался");
+            currentUsers[chatId].email = line.Split(' ')[2];
             currentUsers[chatId].step = 0;
             return;
         }
@@ -312,10 +346,10 @@ async void Authorization_Password(long chatId, string password_input)
 
 
 //метод отправки на email
-static async Task SendReportAsync(long chatId)
+static async Task SendReportAsync(long chatId, string email)
 {
     MailAddress from = new MailAddress("hehhahbot@gmail.com", "Hehebot");
-    MailAddress to = new MailAddress("lai.20@uni-dubna.ru");
+    MailAddress to = new MailAddress(email);
     MailMessage m = new MailMessage(from, to);
 
     //тема письма
@@ -325,8 +359,8 @@ static async Task SendReportAsync(long chatId)
     m.Body = "Протокол допуска/протокол мониторинга";
 
     //прикрепляем документ отчета
-    m.Attachments.Add(new Attachment(@"..\..\..\..\cat.pdf"));
-
+    m.Attachments.Add(new Attachment(@"..\..\..\..\PDFresult\Test{ actual_index + 1}.pdf"));
+    m.Attachments.Add(new Attachment(@"..\..\..\..\PDFresult\TestTransit{actual_index + 1}.pdf"));
 
     // адрес smtp-сервера и порт, с которого отправляется письмо
     SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
@@ -337,6 +371,8 @@ static async Task SendReportAsync(long chatId)
     smtp.EnableSsl = true;
     //отправка
     await smtp.SendMailAsync(m);
+    
+    Console.WriteLine($"{chatId} авторизировался");
     Console.WriteLine($"{chatId}: Письмо отправлено");
 
     /*

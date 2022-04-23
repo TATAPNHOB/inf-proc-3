@@ -39,11 +39,13 @@ namespace BotManager
         static readonly XFont C_font2 = new XFont("Times New Roman", 12);
         static readonly XFont C_font3 = new XFont("Times New Roman", 10);
         static readonly XFont C_font4 = new XFont("Times New Roman", 8);
-        static void Main(string[] args)
+
+        internal static void Proccess()
         {
             GoogleCredential credential;//Права 
             using (FileStream stream = new FileStream("client-secrets.json", FileMode.Open, FileAccess.Read))
             {
+                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
                 credential = GoogleCredential.FromStream(stream)
                     .CreateScoped(Scopes);
             }
@@ -127,8 +129,10 @@ namespace BotManager
                 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
             }
-
-            PdfDocument protocol3 = PdfSharp.Pdf.IO.PdfReader.Open("C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\prot3.pdf", PdfSharp.Pdf.IO.PdfDocumentOpenMode.Import);//путь к шаблону с пустыми полями
+            //путь к шаблону с пустыми полями
+            
+PdfDocument protocol3 = PdfSharp.Pdf.IO.PdfReader.Open(@"..\..\..\..\PDFtemplates\prot3.pdf", PdfSharp.Pdf.IO.PdfDocumentOpenMode.Import);
+            //PdfDocument protocol3 = PdfSharp.Pdf.IO.PdfReader.Open("C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\prot3.pdf", PdfSharp.Pdf.IO.PdfDocumentOpenMode.Import);
 
 
 
@@ -213,9 +217,10 @@ namespace BotManager
                 g.DrawString(second_sheet_values[actual_index][9].ToString().Substring(11), C_font, XBrushes.Black,
                     new XRect(117.5, 667, 56.5, 10), XStringFormats.Center);//продолжение время
 
-
-                doc.Save($"C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\TestTransit{actual_index + 1}.pdf"); //путь, куда сохранять док
-
+                //
+                doc.Save(@"..\..\..\..\PDFresult\TestTransit{actual_index + 1}.pdf");
+                //doc.Save($"C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\TestTransit{actual_index + 1}.pdf"); //путь, куда сохранять док
+                
 
             }
         }
@@ -280,9 +285,10 @@ namespace BotManager
 
             }
 
-            PdfDocument protocol1 = PdfSharp.Pdf.IO.PdfReader.Open("C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\prot1.pdf", PdfSharp.Pdf.IO.PdfDocumentOpenMode.Import);
-            PdfDocument protocol2 = PdfSharp.Pdf.IO.PdfReader.Open("C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\prot2.pdf", PdfSharp.Pdf.IO.PdfDocumentOpenMode.Import);//путь к шаблону с пустыми полями
-
+            //PdfDocument protocol1 = PdfSharp.Pdf.IO.PdfReader.Open("C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\prot1.pdf", PdfSharp.Pdf.IO.PdfDocumentOpenMode.Import);
+            //PdfDocument protocol2 = PdfSharp.Pdf.IO.PdfReader.Open("C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\prot2.pdf", PdfSharp.Pdf.IO.PdfDocumentOpenMode.Import);//путь к шаблону с пустыми полями
+            PdfDocument protocol1 = PdfSharp.Pdf.IO.PdfReader.Open(@"..\..\..\..\PDFtemplates\prot1.pdf", PdfSharp.Pdf.IO.PdfDocumentOpenMode.Import);
+            PdfDocument protocol2 = PdfSharp.Pdf.IO.PdfReader.Open(@"..\..\..\..\PDFtemplates\prot2.pdf", PdfSharp.Pdf.IO.PdfDocumentOpenMode.Import);//путь к шаблону с пустыми полями
 
 
 
@@ -479,7 +485,9 @@ namespace BotManager
                         + third_sheet_values[actual_index][2].ToString() + "-" + (cur_seance - minus_k).ToString("D3"), S_font2, XBrushes.Black,
                         new XRect(667, 77, 115, 13), XStringFormats.Center); ; //ТЗЧ/...
                 }
-                doc.Save($"C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\Test{actual_index + 1}.pdf"); //путь, куда сохранять док
+                
+                doc.Save(@"..\..\..\..\PDFresult\Test{ actual_index + 1}.pdf"); //путь, куда сохранять док
+                //doc.Save($"C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\Test{actual_index + 1}.pdf"); //путь, куда сохранять док
 
 
             }
