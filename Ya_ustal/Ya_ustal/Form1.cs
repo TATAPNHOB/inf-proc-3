@@ -271,15 +271,23 @@ namespace Ya_ustal
 				tab = 0;
                 T = 30;
 				headerH = 30;
+				string obluchayemoye = first_sheet_values[actual_index][2].ToString();
+				for (int i = 3; i < 6; i++)
+				{
+					if (first_sheet_values[actual_index][i].ToString() != "") obluchayemoye += "," + first_sheet_values[actual_index][i].ToString();
+				}
 
 				// I, J, K == 7,8,9
 				if (first_sheet_values[actual_index][10].ToString() != "")
                 {
 					g.DrawString("Протокол мониторинга характеристик потока ионов сеанса", TNR16B, XBrushes.Black,
 				new XRect(0, T + num * StrBetw, page.Width, H), XStringFormats.Center); num++;
-					g.DrawString("ТЗЧ/" + "0000" + "-" + "Зн" + "-" + "00" + "/" + "00" + "-" + "000", TNR14, XBrushes.Black,
+					g.DrawString("ТЗЧ/" + second_sheet_values[actual_index][9].ToString().Substring(6, 4) + "-" +
+						third_sheet_values[actual_index][0].ToString() + "-"
+						+ third_sheet_values[actual_index][13].ToString() + "/" + third_sheet_values[actual_index][2].ToString()
+						+ "-" + (cur_seance - minus_k).ToString(), TNR14, XBrushes.Black,
 						new XRect(0, T + num * StrBetw, page.Width - R, H), XStringFormats.CenterRight); num++;
-					g.DrawString("Сеанс № " + "000", TNR11, XBrushes.Black,
+					g.DrawString("Сеанс № " + (cur_seance - minus_k).ToString(), TNR11, XBrushes.Black,
 						new XRect(0, T + num * StrBetw, page.Width - R, H), XStringFormats.CenterRight);
 
 					addString_startNewLine("______________________________________________", TNR145B);
@@ -287,22 +295,29 @@ namespace Ya_ustal
 					addString_startNewLine("Испытательный ионный комплекс : ИИК 10К-400", TNR11);
 
 					prevlens = 0; //сумма ширин предыдущих колонок
-					
 
+					
 					drawTable(new double[] { 80, 120, 180, 120, 120 }, new string[][] { new string[]{ "Название", "организации"},
 																				new string[]{ "Шифр или", "наименование работы"},
 																				new string[]{ "Облучаемое изделие"},
 																				new string[]{ "Время начала", "облучения"},
 																				new string[]{ "Длительность"}},
-																		new string[] { "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", },
+																		new string[] { first_sheet_values[actual_index][1].ToString()
+																		, "XX-XXXX"
+																		, obluchayemoye
+																		, second_sheet_values[actual_index][9].ToString()
+																		, second_sheet_values[actual_index][11].ToString() },
 																		TNR11B, A11, headerH, tab1rowH);
-					addString_startNewLine("2.Условия эксперимента: в среде " + "ЗНАЧ", TNR11B);
+					addString_startNewLine("2.Условия эксперимента: в среде " + third_sheet_values[actual_index][5].ToString(), TNR11B);
 
 					drawTable(new double[] { 80, 120, 150, 120 }, new string[][]      { new string[]{ "Угол"},
-																				new string[]{ "Температура, 25°С"},
+																				new string[]{ "Температура,°С"},
 																				new string[]{ "Материал дегрейдора"},
 																				new string[]{ "Толщина, мкм"}},
-																		new string[] { "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ" },
+																		new string[] { first_sheet_values[actual_index][24].ToString()
+																		, first_sheet_values[actual_index][28].ToString()
+																		, third_sheet_values[actual_index][3].ToString()
+																		, third_sheet_values[actual_index][4].ToString() },
 																		TNR11B, A11, headerH, tab23rowH);
 
 					addString_startNewLine("3. Характеристики потока ионов:", TNR11B);
@@ -312,7 +327,11 @@ namespace Ya_ustal
 																				new string[]{ "Энергия Е на поверхности, МэВ/н"},
 																				new string[]{ "Пробег, R [Si], мкм"},
 																				new string[]{ "Линейные потери энергии ЛПЭ", "МэВ×см2/мг [Si]"}},
-																		new string[] { "ЗНАЧ" + "00", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ" },
+																		new string[] { third_sheet_values[actual_index][0].ToString()
+																		+ third_sheet_values[actual_index][1].ToString()
+																		, $"{third_sheet_values[actual_index][6]}±{third_sheet_values[actual_index][7]}"
+																		, $"{third_sheet_values[actual_index][8]}±{third_sheet_values[actual_index][9]}"
+																		, $"{third_sheet_values[actual_index][10]}±{third_sheet_values[actual_index][11]}" },
 																		TNR11B, A11, headerH, tab23rowH);
 
 					addString_startNewLine("Данные по пропорциональным счетчикам:", TNR11);
@@ -322,7 +341,11 @@ namespace Ya_ustal
 																				new string[]{ "3"},
 																				new string[]{ "4"},
 																				new string[]{ "Среднее значение"} },
-																		new string[] { "ЗНАЧ" + "00", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ" },
+																		new string[] { first_sheet_values[actual_index][18].ToString()
+																		, first_sheet_values[actual_index][19].ToString()
+																		, first_sheet_values[actual_index][20].ToString()
+																		, first_sheet_values[actual_index][21].ToString()
+																		, first_sheet_values[actual_index][17].ToString() },
 																		TNR11B, A11, headerH, tab45rowH);
 					addString_startNewLine("Данные по трековым мембранам из лавсановой пленки:", TNR11);
 					drawTable(new double[] { 80, 60, 60, 60, 60, 60, 60, 60, 60, 100, 100 }, new string[][]{ new string[]{ "Детектор 1"},
@@ -336,7 +359,15 @@ namespace Ya_ustal
 																									new string[]{ " "},
 																									new string[]{ "Неоднородность", "по лев., %"},
 																									new string[]{ "Неоднородность", "по прав., %"}},
-																											new string[] { "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", " ", " ", " ", "ЗНАЧ", "ЗНАЧ" },
+																											new string[] { first_sheet_values[actual_index][8].ToString()
+																											, first_sheet_values[actual_index][9].ToString()
+																											, first_sheet_values[actual_index][10].ToString()
+																											, first_sheet_values[actual_index][11].ToString()
+																											, first_sheet_values[actual_index][12].ToString()
+																											, first_sheet_values[actual_index][13].ToString()
+																											, " ", " ", " "
+																											, first_sheet_values[actual_index][32].ToString()
+																											, first_sheet_values[actual_index][33].ToString() },
 																											TNR11B, A11, headerH, tab45rowH);
 
 					g.DrawString("Ответственный за проведение испытаний в испытательную смену от ООО''НПП''", TNR11, XBrushes.Black,
@@ -353,17 +384,20 @@ namespace Ya_ustal
 
 					num -= 5;
 					T -= headerH * 2 + tab45rowH + 3;
-					addString_RIGHT("Расчетный коэффициент К =     " + "0,00" + "   ±   " + "0,00", TNR11); num++;
-					addString_RIGHT("(протокол допуска №     " + "0/0-0" + "    )", TNR11); num++;
-					addString_RIGHT("Фактический коэффициент К=     " + "0,00", TNR11); num++;
+					addString_RIGHT("Расчетный коэффициент К =     " + first_sheet_values[actual_index][30].ToString() + "   ±   " + first_sheet_values[actual_index][31].ToString(), TNR11); num++;
+					addString_RIGHT("(протокол допуска №     " + first_sheet_values[actual_index][23].ToString() + "    )", TNR11); num++;
+					addString_RIGHT("Фактический коэффициент К=     " + "А ГДЕ ФОРМУЛА, А?", TNR11); num++;
 				}
                 else
                 {
 					g.DrawString("Протокол мониторинга характеристик потока ионов сеанса", TNR16B, XBrushes.Black,
 				new XRect(0, T + num * StrBetw, page.Width, H), XStringFormats.Center); num++;
-					g.DrawString("ТЗЧ/" + "0000" + "-" + "Зн" + "-" + "00" + "/" + "00" + "-" + "000", TNR12, XBrushes.Black,
+					g.DrawString("ТЗЧ/" + second_sheet_values[actual_index][9].ToString().Substring(6, 4) + "-" +
+						third_sheet_values[actual_index][0].ToString() + "-"
+						+ third_sheet_values[actual_index][13].ToString() + "/" + third_sheet_values[actual_index][2].ToString()
+						+ "-" + (cur_seance - minus_k).ToString(), TNR12, XBrushes.Black,
 						new XRect(0, T + num * StrBetw, page.Width - R, H), XStringFormats.CenterRight); num++;
-					g.DrawString("Сеанс № " + "000", TNR11B, XBrushes.Black,
+					g.DrawString("Сеанс № " + (cur_seance - minus_k).ToString(), TNR11B, XBrushes.Black,
 						new XRect(0, T + num * StrBetw, page.Width - R, H), XStringFormats.CenterRight);
 
 					addString_startNewLine("______________________________________________", TNR145B);
@@ -378,15 +412,22 @@ namespace Ya_ustal
 																				new string[]{ "Облучаемое изделие"},
 																				new string[]{ "Время начала", "облучения"},
 																				new string[]{ "Длительность"}},
-																		new string[] { "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", },
+																		new string[] { first_sheet_values[actual_index][1].ToString()
+																		, "XX-XXX"
+																		, obluchayemoye
+																		, second_sheet_values[actual_index][9].ToString()
+																		, second_sheet_values[actual_index][11].ToString() },
 																		TNR11B, TNR11, headerH, tab1rowH);
-					addString_startNewLine("2.Условия эксперимента: в среде " + "ЗНАЧ", TNR11B);
+					addString_startNewLine("2.Условия эксперимента: в среде " + third_sheet_values[actual_index][5].ToString(), TNR11B);
 
 					drawTable(new double[] { 80, 120, 150, 120 }, new string[][]      { new string[]{ "Угол"},
 																				new string[]{ "Температура, 25°С"},
 																				new string[]{ "Материал дегрейдора"},
 																				new string[]{ "Толщина, мкм"}},
-																		new string[] { "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ" },
+																		new string[] { first_sheet_values[actual_index][24].ToString()
+																		, first_sheet_values[actual_index][28].ToString()
+																		, third_sheet_values[actual_index][3].ToString()
+																		, third_sheet_values[actual_index][4].ToString() },
 																		TNR11B, TNR11, headerH, tab23rowH);
 
 					addString_startNewLine("3. Характеристики потока ионов:", TNR11B);
@@ -396,7 +437,11 @@ namespace Ya_ustal
 																				new string[]{ "Энергия Е на поверхности, МэВ/н"},
 																				new string[]{ "Пробег, R [Si], мкм"},
 																				new string[]{ "Линейные потери энергии ЛПЭ", "МэВ×см2/мг [Si]"}},
-																		new string[] { "ЗНАЧ" + "00", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ" },
+																		new string[] { third_sheet_values[actual_index][0].ToString() + 
+																		third_sheet_values[actual_index][1].ToString()
+																		, $"{third_sheet_values[actual_index][6]}±{third_sheet_values[actual_index][7]}"
+																		, $"{third_sheet_values[actual_index][8]}±{third_sheet_values[actual_index][9]}"
+																		, $"{third_sheet_values[actual_index][10]}±{third_sheet_values[actual_index][11]}" },
 																		TNR11B, TNR11, headerH, tab23rowH);
 
 					addString_startNewLine("Данные по пропорциональным счетчикам:", TNR11);
@@ -406,7 +451,11 @@ namespace Ya_ustal
 																				new string[]{ "3"},
 																				new string[]{ "4"},
 																				new string[]{ "Среднее значение"} },
-																		new string[] { "ЗНАЧ" + "00", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ" },
+																		new string[] { first_sheet_values[actual_index][18].ToString(),
+																			first_sheet_values[actual_index][19].ToString(),
+																			first_sheet_values[actual_index][20].ToString(),
+																			first_sheet_values[actual_index][21].ToString(),
+																			first_sheet_values[actual_index][17].ToString() },
 																		TNR11B, TNR11, headerH, tab45rowH);
 					addString_startNewLine("Данные по трековым мембранам из лавсановой пленки:", TNR11);
 					drawTable(new double[] { 80, 60, 60, 60, 60, 60, 60, 60, 60, 200 }, new string[][]{ new string[]{ "Детектор 1"},
@@ -419,7 +468,17 @@ namespace Ya_ustal
 																									new string[]{ "Детектор 8"},
 																									new string[]{ "Детектор 9"},
 																									new string[]{ "Неоднородность, %"} },
-																											new string[] { "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ" },
+																											new string[] { 
+																											 first_sheet_values[actual_index][8].ToString()
+																											, first_sheet_values[actual_index][9].ToString()
+																											, first_sheet_values[actual_index][10].ToString()
+																											, first_sheet_values[actual_index][11].ToString()
+																											, first_sheet_values[actual_index][12].ToString()
+																											, first_sheet_values[actual_index][13].ToString()
+																											, first_sheet_values[actual_index][14].ToString()
+																											, first_sheet_values[actual_index][15].ToString()
+																											, first_sheet_values[actual_index][16].ToString(),
+																											first_sheet_values[actual_index][29].ToString()},
 																											TNR11B, TNR11, headerH, tab45rowH);
 
 					g.DrawString("Ответственный за проведение испытаний в испытательную смену от ООО''НПП''", TNR11, XBrushes.Black,
@@ -436,9 +495,9 @@ namespace Ya_ustal
 
 					num -= 5;
 					T -= headerH * 2 + tab45rowH + 3;
-					addString_RIGHT("Расчетный коэффициент К =     " + "0,00" + "   ±   " + "0,00", TNR11); num++;
-					addString_RIGHT("(протокол допуска №     " + "0/0-0" + "    )", TNR11); num++;
-					addString_RIGHT("Фактический коэффициент К=     " + "0,00", TNR11); num++;
+					addString_RIGHT("Расчетный коэффициент К =     " + first_sheet_values[actual_index][30].ToString() + "   ±   " + first_sheet_values[actual_index][31].ToString(), TNR11); num++;
+					addString_RIGHT("(протокол допуска №     " + first_sheet_values[actual_index][23].ToString() + "    )", TNR11); num++;
+					addString_RIGHT("Фактический коэффициент К=     " + "А ГДЕ ФОРМУЛА", TNR11); num++;
 				}
                 doc.Save($"C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\Test{actual_index + 1}.pdf"); //путь, куда сохранять док
 
@@ -530,23 +589,25 @@ namespace Ya_ustal
 				T = 30;
 
 
-				g.DrawString("ТЗЧ/" + "0000" + "-" + "Зн" + "-" + "0/0-0", TNR12, XBrushes.Black,
+				g.DrawString("TЗЧ/" + second_sheet_values[actual_index][9].ToString().Substring(6, 4) + "-" +
+						third_sheet_values[actual_index][0].ToString() + "-"
+						+ first_sheet_values[actual_index][23].ToString(), TNR12, XBrushes.Black,
 					new XRect(0, T + num * StrBetw, page.Width - R, H), XStringFormats.CenterRight); num++;
-				g.DrawString("Протокол №    " + "0/0-0" + "    от    " + "00.00.0000", TNR14, XBrushes.Black,
+				g.DrawString("Протокол №    " + first_sheet_values[actual_index][23].ToString() + "    от    " + DateTime.Today.ToString("d"), TNR14, XBrushes.Black,
 					new XRect(0, T + num * StrBetw, page.Width, H), XStringFormats.Center); num += 2;
 
-				g.DrawString("Определения неоднородности флюенса ионов    " + "000" + "  Зн", TNR14, XBrushes.Black,
+				g.DrawString("Определения неоднородности флюенса ионов    " + third_sheet_values[actual_index][1].ToString() + third_sheet_values[actual_index][0].ToString(), TNR14, XBrushes.Black,
 					new XRect(0, T + num * StrBetw, page.Width, H), XStringFormats.Center); num++;
-				g.DrawString("с энергией   " + "0,0" + "   МэВ/N   на испытательном стенде  ИИК 10К-400", TNR14, XBrushes.Black,
+				g.DrawString("с энергией   " + third_sheet_values[actual_index][6].ToString() + "   МэВ/N   на испытательном стенде  ИИК 10К-400", TNR14, XBrushes.Black,
 					new XRect(0, T + num * StrBetw, page.Width, H), XStringFormats.Center); num += 2;
 
 				addString_startNewLine("1. Цель: Оценка соответствия неоднородности флюенса ионов требованиям заказчика испытаний.", TNR11);
 				addString_startNewLine("2. Время и место определения неоднородности флюенса ионов:", TNR11);
-				addString_startNewLine("проводилась в период с " + "00.00.0000 00:00:00" + " по " + "00.00.0000 00:00:00" + " в ЛЯР ОИЯИ.", TNR11);
+				addString_startNewLine("проводилась в период с " + second_sheet_values[actual_index][9].ToString() + " по " + second_sheet_values[actual_index][10].ToString() + " в ЛЯР ОИЯИ.", TNR11);
 				addString_startNewLine("3. Условия определения неоднородности флюенса ионов:", TNR11);
-				addString_startNewLine("        - температура окружающей среды:   " + "00" + "   °С;", TNR11);
-				addString_startNewLine("        - атмосферное давление:   " + "000" + "   мм.рт.ст.;", TNR11);
-				addString_startNewLine("        - относительная влажность воздуха:   " + "00" + "   %.", TNR11);
+				addString_startNewLine("        - температура окружающей среды:   " + first_sheet_values[actual_index][27].ToString() + "   °С;", TNR11);
+				addString_startNewLine("        - атмосферное давление:   " + first_sheet_values[actual_index][25].ToString() + "   мм.рт.ст.;", TNR11);
+				addString_startNewLine("        - относительная влажность воздуха:   " + first_sheet_values[actual_index][26].ToString() + "   %.", TNR11);
 				addString_startNewLine("4. Средства определения неоднородности флюенса ионов:", TNR11);
 				addString_startNewLine("        - испытательный стенд: ИИК 10К-400;", TNR11);
 				addString_startNewLine("        - трековые мембраны (лавсановая плёнка);", TNR11);
@@ -556,8 +617,8 @@ namespace Ya_ustal
 				addString_startNewLine("5. Методика определения неоднородности флюенса ионов.", TNR11);
 				addString_startNewLine("5.1. Проводилась в соответствии с «Методикой измерений флюенса тяжелых заряженных частиц", TNR11);
 				addString_startNewLine("        с помощью трековых мембран на основе лавсановой пленки» ЦДКТ1.027.012-2015.", TNR11);
-				addString_startNewLine("6.Результаты определения неоднородности флюенса ионов " + "000" + " " + "Зн" + " представлены в таблице 1:", TNR11);
-				addString_startNewLine("              N = " + "0,00Е+00" + "        с-1" + "               Ф=        " + "0,00Е+00" + "        частиц*см-2", TNR11);
+				addString_startNewLine("6.Результаты определения неоднородности флюенса ионов " + third_sheet_values[actual_index][1].ToString() + " " + third_sheet_values[actual_index][0].ToString() + " представлены в таблице 1:", TNR11);
+				addString_startNewLine("              N = " + first_sheet_values[actual_index][22].ToString() + "        с-1" + "               Ф=        " + first_sheet_values[actual_index][7].ToString() + "        частиц*см-2", TNR11);
 				num++;
 				prevlens = 0; //сумма ширин предыдущих колонок
 				pen = new XPen(XColor.FromName("Black"), 0.5);
@@ -566,22 +627,30 @@ namespace Ya_ustal
 																				new string[]{ "ТД3"},
 																				new string[]{ "ТД4"},
 																				new string[]{ "ТД5"}},
-																	new string[] { "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", },
+																	new string[] { first_sheet_values[actual_index][8].ToString()
+																	, first_sheet_values[actual_index][9].ToString()
+																	, first_sheet_values[actual_index][10].ToString()
+																	, first_sheet_values[actual_index][11].ToString()
+																	, first_sheet_values[actual_index][12].ToString() },
 																	TNR11, TNR11, headerH, tabrowH);
 				drawTable(new double[] { 70, 70, 70, 70, 70 }, new string[][] {     new string[]{ "ТД6"},
 																				new string[]{ "ТД7"},
 																				new string[]{ "ТД8"},
 																				new string[]{ "ТД9"},
 																				new string[]{ "Среднее зн."}},
-																	new string[] { "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", "ЗНАЧ", },
+																	new string[] { first_sheet_values[actual_index][13].ToString()
+																	, first_sheet_values[actual_index][14].ToString()
+																	, first_sheet_values[actual_index][15].ToString()
+																	, first_sheet_values[actual_index][16].ToString()
+																	, first_sheet_values[actual_index][7].ToString()},
 																	TNR11, TNR11, headerH, tabrowH);
 				T += 3;
 				num++;
-				addString_startNewLine("         Коэффициент:           Красчетный  =  " + "0,00" + "   ±   " + "0,00", TNR11);
-				addString_startNewLine("         Неоднородность флюенса ионов составила :           " + "00,00" + "   %", TNR11);
+				addString_startNewLine("         Коэффициент:           Красчетный  =  " + first_sheet_values[actual_index][30].ToString() + "   ±   " + first_sheet_values[actual_index][31].ToString(), TNR11);
+				addString_startNewLine("         Неоднородность флюенса ионов составила :           " + first_sheet_values[actual_index][29].ToString() + "   %", TNR11);
 				num++;
 				addString_startNewLine("7. Принято решение о продолжении работ на ионе                  /  ̶п̶о̶в̶т̶о̶р̶н̶о̶й̶ ̶н̶а̶с̶т̶р̶о̶й̶к̶е̶ ̶п̶у̶ч̶к̶а̶", TNR11);
-				addString_startNewLine("        в  " + "00:00:0000", TNR11);
+				addString_startNewLine("        в  " + second_sheet_values[actual_index][9].ToString().Substring(11), TNR11);
 				num++;
 
 				g.DrawString("Ответственный за проведение испытаний", TNR11, XBrushes.Black,
