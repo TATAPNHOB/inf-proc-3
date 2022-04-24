@@ -435,7 +435,7 @@ namespace Ya_ustal
 
 
 					num -= 5;
-					T -= headerH * 2 + tab45rowH + 6;
+					T -= headerH * 2 + tab45rowH + 3;
 					addString_RIGHT("Расчетный коэффициент К =     " + "0,00" + "   ±   " + "0,00", TNR11); num++;
 					addString_RIGHT("(протокол допуска №     " + "0/0-0" + "    )", TNR11); num++;
 					addString_RIGHT("Фактический коэффициент К=     " + "0,00", TNR11); num++;
