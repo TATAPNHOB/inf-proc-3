@@ -30,7 +30,7 @@ namespace Ya_ustal
 		PdfDocument doc;
 		int num_of_ions = 4;
 		int num_of_sessions = 1;
-		int action_count = 130;
+		int action_count = 136;
 
 		static readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
 		static readonly string ApplicationName = "Legistrators";//произвольно
@@ -46,9 +46,9 @@ namespace Ya_ustal
 		static readonly XFont A11 = new XFont("Arial", 11);
 		static readonly XFont TNR145B = new XFont("Times New Roman", 14.5, XFontStyle.Bold);
 		static readonly XFont TNR14 = new XFont("Times New Roman", 14);
-		
+		static readonly XFont A8 = new XFont("Arial", 8);
 
-		
+
 		public Form1()
         {
             InitializeComponent();
@@ -134,8 +134,286 @@ namespace Ya_ustal
 			IList<IList<object>> values = response.Values;
 			return values;
 		}
+
+
+		string fromSecToStr (double inputValue)
+        {
+			return Convert.ToInt32(Math.Truncate(inputValue/3600)).ToString("d2")+":"
+				+ Convert.ToInt32((Math.Truncate(inputValue / 60) - Math.Truncate(inputValue / 3600)*60)).ToString("d2") 
+				+ ":" + Convert.ToInt32((inputValue - Math.Truncate(inputValue / 60) * 60)).ToString("d2");
+        }
+
+		void Request1 (string companyName)
+        {
+			//столбец 1
+			IList<IList<object>> CompanyNames = ReadEntries(sheets[1], SpreadsheetID, $"!B2:B{action_count+1}");
+			//столбец 2
+			IList<IList<object>> IonName = ReadEntries(sheets[1], SpreadsheetID, $"!C2:C{action_count+1}");
+			//столбец 12
+			IList<IList<object>> TimeT = ReadEntries(sheets[1], SpreadsheetID, $"!M2:M{action_count+1}");
+
+			//это словарь с ионом:ключ - имя, значение -  его суммарне временя
+			Dictionary<string, double> IonCount = new Dictionary<string, double>();
+
+
+            for (int i = 0; i < action_count; i++)
+            {
+				if (Convert.ToString(CompanyNames[i][0])==companyName)
+                {
+					if (!IonCount.ContainsKey(Convert.ToString(IonName[i][0])))
+                    {
+						IonCount.Add(Convert.ToString(IonName[i][0]), 0);
+                    }
+					IonCount[Convert.ToString(IonName[i][0])]+= TimeSpan.Parse(Convert.ToString(TimeT[i][0])).TotalSeconds;
+					string a = fromSecToStr(IonCount[Convert.ToString(IonName[i][0])]);
+                }
+
+            }
+
+			
+				System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+				
+
+				
+				
+				H = 9; //высота строки
+				
+
+				int num = 1;
+				var doc = new PdfDocument();
+
+				
+
+				List<string> Ions = new List<string>();
+				List<string> Time = new List<string>();
+
+				foreach (var item in IonCount)
+				{
+					Ions.Add(item.Key);
+					Time.Add(fromSecToStr(item.Value));
+				}
+				int N = Ions.Count;
+				int for_1_page = 40;
+				for (int i = 0; i < N; i += for_1_page)
+				{
+					var page = new PdfPage();
+					doc.Pages.Add(page);
+					XGraphics g = XGraphics.FromPdfPage(page);
+					g.DrawString("Название компании: " + companyName, TNR11B, XBrushes.Black,
+						new XRect(0, T + num * StrBetw, page.Width, H), XStringFormats.Center);
+					num++;
+
+					g.DrawString("Ион", TNR11B, XBrushes.Black,
+						new XRect(L, T + num * StrBetw, (page.Width - L - R) / 2, H), XStringFormats.Center);
+					g.DrawString("Время работы", TNR11B, XBrushes.Black,
+						new XRect(L + (page.Width - L - R) / 2, T + num * StrBetw, (page.Width - L - R) / 2, H), XStringFormats.Center);
+					num++;
+					if (i + for_1_page > N)
+					{
+						for_1_page = N - i;
+					}
+					for (int j = i; j < i + for_1_page; j++)
+					{
+						g.DrawString(Ions[j], A8, XBrushes.Black,
+						new XRect(L, T + num * StrBetw, (page.Width - L - R) / 2, H), XStringFormats.Center);
+						g.DrawString(Time[j], A8, XBrushes.Black,
+							new XRect(L + (page.Width - L - R) / 2, T + num * StrBetw, (page.Width - L - R) / 2, H), XStringFormats.Center);
+						num++;
+					}
+					num = 0;
+				}
+
+
+
+				doc.Save("C:\\Users\\foly\\Desktop\\pdf\\1.pdf"); //путь, куда сохранять док
+
+			
+		}
+		
+
+		void Request2(string companyName)
+		{
+			//столбец 1
+			IList<IList<object>> CompanyNames = ReadEntries(sheets[1], SpreadsheetID, $"!B2:B{action_count + 1}");
+			//столбец 9
+			IList<IList<object>> startTime = ReadEntries(sheets[1], SpreadsheetID, $"!J2:J{action_count + 1}");
+
+
+			
+			string result="";
+
+			for (int i = 0; i < action_count; i++)
+			{
+				if (Convert.ToString(CompanyNames[i][0]) == companyName)
+				{
+
+					result= Convert.ToString(startTime[i][0]);
+					break;
+
+                }
+
+			}
+
+			System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+			
+			H = 9; //высота строки
+
+			int num = 1;
+			var doc = new PdfDocument();
+			var page = new PdfPage();
+			doc.Pages.Add(page);
+			XGraphics g = XGraphics.FromPdfPage(page);
+
+			g.DrawString("Название компании:", TNR11B, XBrushes.Black,
+				new XRect(L, T + num * StrBetw, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			g.DrawString("Время начала работ:", TNR11B, XBrushes.Black,
+				new XRect(L + (page.Width - L - R) / 2, T + num * StrBetw, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			num++;
+			g.DrawString(companyName, A8, XBrushes.Black,
+				new XRect(L, T + num * StrBetw, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			g.DrawString(result, A8, XBrushes.Black,
+				new XRect(L + (page.Width - L - R) / 2, T + num * StrBetw, (page.Width - L - R) / 2, H), XStringFormats.Center);
+
+
+			doc.Save("C:\\Users\\foly\\Desktop\\pdf\\2.pdf"); //путь, куда сохранять док
+
+
+
+		}
+
+		void Request3(string ionName, string isotope, string sessionNumber)
+		{
+			IList<IList<object>> table = ReadEntries(sheets[2], SpreadsheetID, $"!A2:O{num_of_ions*num_of_sessions+1}");
+
+			int choice = -1 ;
+            
+            for (int i = 0; i < num_of_ions * num_of_sessions; i++)
+            {
+				if (Convert.ToString(table[i][0])== ionName && Convert.ToString(table[i][13])==sessionNumber
+					&& Convert.ToString(table[i][1]) == isotope)
+				{
+					choice = i;
+					break;
+				}
+            }
+			string result_Type = ionName;
+			string result_Energy = Convert.ToString(table[choice][6]);
+			string result_Si = Convert.ToString(table[choice][8]);
+			
+
+
+		}
+
+		void Request4(string ionName)
+		{
+			IList<IList<object>> IonNames = ReadEntries(sheets[1], SpreadsheetID, $"!C2:C{action_count + 1}");
+			IList<IList<object>> CompanyNames = ReadEntries(sheets[1], SpreadsheetID, $"!B2:B{action_count + 1}");
+			IList<IList<object>> Time = ReadEntries(sheets[1], SpreadsheetID, $"!N2:N{action_count + 1}");
+
+			List<string> exceptions = new List<string>() {"Переход","Смена", "Детектор", "Простой" };
+			Dictionary<string, double> WorkedTime = new Dictionary<string, double>();
+			
+
+			for (int i = 0; i < action_count; i++)
+			{
+				bool check = true;
+                foreach (string exc in exceptions)
+                {
+					if (Convert.ToString(CompanyNames[i][0]).Contains(exc)) check = false;
+					
+				}
+				if (!check) continue;
+
+				if (!WorkedTime.ContainsKey(Convert.ToString(CompanyNames[i][0])))
+				{
+					WorkedTime.Add(Convert.ToString(CompanyNames[i][0]), 0);
+				}
+				WorkedTime[Convert.ToString(CompanyNames[i][0])] 
+					+= TimeSpan.Parse(Convert.ToString(Time[i][0])).TotalSeconds;
+				string a = fromSecToStr(WorkedTime[Convert.ToString(CompanyNames[i][0])]);
+			}
+			//
+
+
+
+		}
+
+		void Request5(string ionName)
+		{
+			IList<IList<object>> sessionType = ReadEntries(sheets[1], SpreadsheetID, $"!B2:B{action_count + 1}");
+			IList<IList<object>> ionType = ReadEntries(sheets[1], SpreadsheetID, $"!C2:C{action_count + 1}");
+			IList<IList<object>> seanceTime = ReadEntries(sheets[1], SpreadsheetID, $"!M2:M{action_count + 1}");
+			IList<IList<object>> seanceTimeWithTB = ReadEntries(sheets[1], SpreadsheetID, $"!N2:N{action_count + 1}");
+
+			//Dictionary<string, double> IonTime = new Dictionary<string, double>();
+			double res = 0;
+
+			for (int i = 0; i < action_count; i++)
+			{
+				/*if (i == 110) {
+					int d = 5;
+				}*/
+				/*if (!IonTime.ContainsKey(Convert.ToString(ionType[i][0])))
+				{
+					IonTime.Add(Convert.ToString(ionType[i][0]), 0);
+				}*/
+				if (ionType[i][0].ToString() != ionName) continue;
+
+				res += -TimeSpan.Parse(Convert.ToString(seanceTimeWithTB[i][0])).TotalSeconds + TimeSpan.Parse(Convert.ToString(seanceTime[i][0])).TotalSeconds;
+				
+				if (Convert.ToString(sessionType[i][0]) == "Простой")
+				{
+					res += TimeSpan.Parse(Convert.ToString(seanceTimeWithTB[i][0])).TotalSeconds;
+				}
+			}
+			int a = 5;
+
+
+			
+		}
+		void Request6()
+		{
+			IList<IList<object>> sessionNumb = ReadEntries(sheets[0], SpreadsheetID, $"!A{action_count + 1}:A{action_count + 1}");
+			IList<IList<object>> sessionStatus = ReadEntries(sheets[0], SpreadsheetID, $"!B{action_count + 1}:B{action_count + 1}");
+			string res_numb = sessionNumb[0][0].ToString();
+			string res_Status = sessionStatus[0][0].ToString();
+
+		}
+		void Request7()
+		{
+			IList<IList<object>> sessionNumb = ReadEntries(sheets[1], SpreadsheetID, $"!A{action_count + 1}:A{action_count + 1}");
+			IList<IList<object>> sessionStart = ReadEntries(sheets[1], SpreadsheetID, $"!J{action_count + 1}:J{action_count + 1}");
+			string res_numb = sessionNumb[0][0].ToString();
+			string res_Status = sessionStart[0][0].ToString();
+
+		}
+
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+			GoogleCredential credential;//Права 
+			using (FileStream stream = new FileStream("client-secrets.json", FileMode.Open, FileAccess.Read))
+			{
+				credential = GoogleCredential.FromStream(stream)
+					.CreateScoped(Scopes);
+			}
+
+			service = new SheetsService(new Google.Apis.Services.BaseClientService.Initializer()
+			{
+				HttpClientInitializer = credential,
+				ApplicationName = ApplicationName,
+			});
+			/*GenPDFTransitions("1-4");
+			GenPDFSeances("27-33", 130);*/
+			Request2("СПЭЛС");
+		}
+
+
+
 		static void CreateEntry(string sheet, string SpreadsheetID, string Range)
 		{
+
 			string range = $"{sheet}{Range}";//Специфичный ренж, вставляется вниз, поэтому номер строки не нужен
 			ValueRange valueRange = new ValueRange();
 
@@ -169,23 +447,7 @@ namespace Ya_ustal
 			var deleteResponse = deleteRequest.Execute();
 		}
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-			GoogleCredential credential;//Права 
-			using (FileStream stream = new FileStream("client-secrets.json", FileMode.Open, FileAccess.Read))
-			{
-				credential = GoogleCredential.FromStream(stream)
-					.CreateScoped(Scopes);
-			}
-
-			service = new SheetsService(new Google.Apis.Services.BaseClientService.Initializer()
-			{
-				HttpClientInitializer = credential,
-				ApplicationName = ApplicationName,
-			});
-			GenPDFTransitions("1-4");
-			GenPDFSeances("27-33", 130);
-		}
+        
 
         private void GenPDFSeances(string action_interval, int action_count)
         {
