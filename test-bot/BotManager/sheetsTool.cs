@@ -40,8 +40,10 @@ namespace BotManager
         static readonly XFont C_font3 = new XFont("Times New Roman", 10);
         static readonly XFont C_font4 = new XFont("Times New Roman", 8);
 
-        internal static void Proccess()
+       
+        internal static void Proccess(long chatId)
         {
+            
             GoogleCredential credential;//Права 
             using (FileStream stream = new FileStream("client-secrets.json", FileMode.Open, FileAccess.Read))
             {
@@ -55,12 +57,16 @@ namespace BotManager
                 HttpClientInitializer = credential,
                 ApplicationName = ApplicationName,
             });
-            GenPDFTransitions("1-4", 130);
-            GenPDFSeances("27-33", 130);
+
+            //создание папки пользователя, чтобы именно там держать его пдфки, которые потом должны удалиться!
+            Directory.CreateDirectory(@$"..\..\..\..\PDFresult\{chatId}");
+
+            GenPDFTransitions("1-4", 130, chatId);
+            GenPDFSeances("27-33", 130, chatId);
 
 
         }
-        static void GenPDFTransitions(string action_interval, int action_count)
+        static void GenPDFTransitions(string action_interval, int action_count, long chatId)
         {
             List<int> row_num = new List<int>();
             IList<IList<object>> Search_index_list = ReadEntries(sheets[0], SpreadsheetID, $"!A3:A{action_count}"); //столбец с номерами
@@ -218,13 +224,14 @@ PdfDocument protocol3 = PdfSharp.Pdf.IO.PdfReader.Open(@"..\..\..\..\PDFtemplate
                     new XRect(117.5, 667, 56.5, 10), XStringFormats.Center);//продолжение время
 
                 //
-                doc.Save(@"..\..\..\..\PDFresult\TestTransit{actual_index + 1}.pdf");
-                //doc.Save($"C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\TestTransit{actual_index + 1}.pdf"); //путь, куда сохранять док
-                
+                doc.Save(@$"..\..\..\..\PDFresult\{chatId}\TestTransit{actual_index + 1}.pdf") ;
 
+                //doc.Save($"C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\TestTransit{actual_index + 1}.pdf"); //путь, куда сохранять док
+                doc.Close();
+                protocol3.Close();
             }
         }
-        static void GenPDFSeances(string action_interval, int action_count)
+        static void GenPDFSeances(string action_interval, int action_count, long chatId)
         {
             List<int> row_num = new List<int>();
             IList<IList<object>> Search_index_list = ReadEntries(sheets[0], SpreadsheetID, $"!A3:A{action_count}"); //столбец с номерами
@@ -302,6 +309,7 @@ PdfDocument protocol3 = PdfSharp.Pdf.IO.PdfReader.Open(@"..\..\..\..\PDFtemplate
             foreach (int cur_seance in row_num)
             {
                 PdfDocument doc = new PdfDocument();
+                
                 int actual_index = cur_seance - starting_seance - minus_k;
 
                 // I, J, K == 7,8,9
@@ -486,9 +494,11 @@ PdfDocument protocol3 = PdfSharp.Pdf.IO.PdfReader.Open(@"..\..\..\..\PDFtemplate
                         new XRect(667, 77, 115, 13), XStringFormats.Center); ; //ТЗЧ/...
                 }
                 
-                doc.Save(@"..\..\..\..\PDFresult\Test{ actual_index + 1}.pdf"); //путь, куда сохранять док
+                doc.Save(@$"..\..\..\..\PDFresult\{chatId}\Test{ actual_index + 1}.pdf"); //путь, куда сохранять док
                 //doc.Save($"C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\Test{actual_index + 1}.pdf"); //путь, куда сохранять док
-
+                doc.Close();
+                protocol1.Close();
+                protocol2.Close();
 
             }
 

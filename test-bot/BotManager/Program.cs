@@ -45,13 +45,18 @@ Dictionary<long, botUser> currentUsers = new Dictionary<long, botUser>();
 
 
 //клавиатура для авторизции
-ReplyKeyboardMarkup keyboard_Request = new(
-new KeyboardButton ("Авторизация"));
+/*ReplyKeyboardMarkup keyboard_Request = new(
+new KeyboardButton ("Авторизация"))
+{
+    ResizeKeyboard = false
+};*/
 
+ReplyKeyboardMarkup keyboard_Request = new(
+new KeyboardButton("Авторизация"));
 //клавиатура залогиненного пользователя
 ReplyKeyboardMarkup keyboard_Main = new(new[] {
 new KeyboardButton("Чтение"),
-new KeyboardButton("Изменение"),});
+new KeyboardButton("Изменение")});
 
 ReplyKeyboardMarkup keyboard_yn = new(new[] {
 new KeyboardButton("Да"),
@@ -84,6 +89,8 @@ cts.Cancel();
 
 Message sentMessage;
 
+
+//метод, в котором идёт ответ на введёное пользователем сообщение
 async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
 {
     // Только сообщения:
@@ -119,14 +126,6 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
             DefaultScenery(chatId, messageText);
             break;
     }
-
-    /*Console.WriteLine($"Получено '{messageText}' сообщение в чатике {chatId}.");
-
-// Ответочка введёному сообщению
-sentMessage = await botClient.SendTextMessageAsync(
-    chatId: chatId,
-    text: "Вы произнесли:\n" + messageText,
-    cancellationToken: cancellationToken);*/
 }
 
 
@@ -138,14 +137,26 @@ async void DefaultScenery(long chatId, string messageText)
         switch (messageText)
         {
             case "Да":
-                sheetsTool.Proccess();//внутрь конструктора айдишник для создания папки под пользователя временную
-                SendReportAsync(chatId, currentUsers[chatId].email);
+
+
+                if (Directory.Exists(@$"..\..\..\..\PDFresult\{chatId}"))
+                {
+                    Directory.Delete(@$"..\..\..\..\PDFresult\{chatId}", true);
+                }
+
+
+                sheetsTool.Proccess(chatId);//генерация пдфки
+
+                await SendReportAsync(chatId, currentUsers[chatId].email);//отправка её на почту
+                
                 break;
         }
+
         sentMessage = await botClient.SendTextMessageAsync(
                chatId: chatId,
                text: "Чтобы результат отправился в чат?",
                replyMarkup: keyboard_yn);
+        
         currentUsers[chatId].step = 21;
         return;
     }
@@ -351,7 +362,11 @@ static async Task SendReportAsync(long chatId, string email)
     MailAddress from = new MailAddress("hehhahbot@gmail.com", "Hehebot");
     MailAddress to = new MailAddress(email);
     MailMessage m = new MailMessage(from, to);
-
+    foreach (var item in Directory.GetFiles(@$"..\..\..\..\PDFresult\{chatId}"))
+    {
+        m.Attachments.Add(new Attachment(item));
+    }
+    
     //тема письма
     m.Subject = "Отчетный документ";
 
@@ -359,8 +374,8 @@ static async Task SendReportAsync(long chatId, string email)
     m.Body = "Протокол допуска/протокол мониторинга";
 
     //прикрепляем документ отчета
-    m.Attachments.Add(new Attachment(@"..\..\..\..\PDFresult\Test{ actual_index + 1}.pdf"));
-    m.Attachments.Add(new Attachment(@"..\..\..\..\PDFresult\TestTransit{actual_index + 1}.pdf"));
+    
+    
 
     // адрес smtp-сервера и порт, с которого отправляется письмо
     SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
@@ -371,9 +386,9 @@ static async Task SendReportAsync(long chatId, string email)
     smtp.EnableSsl = true;
     //отправка
     await smtp.SendMailAsync(m);
-    
+
     Console.WriteLine($"{chatId} авторизировался");
-    Console.WriteLine($"{chatId}: Письмо отправлено");
+    Console.WriteLine($"{chatId}: письмо отправлено");
 
     /*
      вызов метода:
