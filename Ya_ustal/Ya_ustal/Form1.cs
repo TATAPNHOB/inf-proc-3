@@ -226,7 +226,7 @@ namespace Ya_ustal
 
 
 
-				doc.Save("C:\\Users\\foly\\Desktop\\pdf\\1.pdf"); //путь, куда сохранять док
+				doc.Save(@"../../../gennedPDF/1.pdf"); //путь, куда сохранять док
 
 			
 		}
@@ -256,27 +256,34 @@ namespace Ya_ustal
 			}
 
 			System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-			
-			H = 9; //высота строки
 
-			int num = 1;
+			H = 15; //высота строки
+			XPen pen = new XPen(XColor.FromName("Black"), 0.5);
+			int num = 0;
 			var doc = new PdfDocument();
 			var page = new PdfPage();
 			doc.Pages.Add(page);
 			XGraphics g = XGraphics.FromPdfPage(page);
 
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
 			g.DrawString("Название компании:", TNR11B, XBrushes.Black,
-				new XRect(L, T + num * StrBetw, (page.Width - L - R) / 2, H), XStringFormats.Center);
+				new XRect(L, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
 			g.DrawString("Время начала работ:", TNR11B, XBrushes.Black,
-				new XRect(L + (page.Width - L - R) / 2, T + num * StrBetw, (page.Width - L - R) / 2, H), XStringFormats.Center);
+				new XRect(L + (page.Width - L - R) / 2, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
 			num++;
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
 			g.DrawString(companyName, A8, XBrushes.Black,
-				new XRect(L, T + num * StrBetw, (page.Width - L - R) / 2, H), XStringFormats.Center);
+				new XRect(L, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
 			g.DrawString(result, A8, XBrushes.Black,
-				new XRect(L + (page.Width - L - R) / 2, T + num * StrBetw, (page.Width - L - R) / 2, H), XStringFormats.Center);
+				new XRect(L + (page.Width - L - R) / 2, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			num++;
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
 
+			g.DrawLine(pen, L, T, L, T + H * 2);
+			g.DrawLine(pen, L + (page.Width - L - R) / 2, T, L + (page.Width - L - R) / 2, T + H * 2);
+			g.DrawLine(pen, L + (page.Width - L - R), T, L + (page.Width - L - R), T + H * 2);
 
-			doc.Save("C:\\Users\\foly\\Desktop\\pdf\\2.pdf"); //путь, куда сохранять док
+			doc.Save(@"../../../gennedPDF/2.pdf"); //путь, куда сохранять док
 
 
 
@@ -406,7 +413,7 @@ namespace Ya_ustal
 			});
 			/*GenPDFTransitions("1-4");
 			GenPDFSeances("27-33", 130);*/
-			Request2("СПЭЛС");
+			Request1("СПЭЛС");
 		}
 
 
@@ -938,5 +945,9 @@ namespace Ya_ustal
             }
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
