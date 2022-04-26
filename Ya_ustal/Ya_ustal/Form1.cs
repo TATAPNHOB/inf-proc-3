@@ -307,16 +307,60 @@ namespace Ya_ustal
 			string result_Type = ionName;
 			string result_Energy = Convert.ToString(table[choice][6]);
 			string result_Si = Convert.ToString(table[choice][8]);
-			
 
 
+			H = 15;
+			int num = 0;
+			XPen pen = new XPen(XColor.FromName("Black"), 0.5);
+			var doc = new PdfDocument();
+			var page = new PdfPage();
+			doc.Pages.Add(page);
+			XGraphics g = XGraphics.FromPdfPage(page);
+
+			double len = (page.Width - L - R) / 5;
+
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
+			g.DrawString("Тип иона:", TNR11B, XBrushes.Black,
+				new XRect(L, T + num * H, len, H), XStringFormats.Center);
+			g.DrawString("Изотоп:", TNR11B, XBrushes.Black,
+				new XRect(L + len, T + num * H, len, H), XStringFormats.Center);
+			g.DrawString("№ сессии в году:", TNR11B, XBrushes.Black,
+				new XRect(L + len * 2, T + num * H, len, H), XStringFormats.Center);
+			g.DrawString("Энергия:", TNR11B, XBrushes.Black,
+				new XRect(L + len * 3, T + num * H, len, H), XStringFormats.Center);
+			g.DrawString("Пробег в кремнии:", TNR11B, XBrushes.Black,
+				new XRect(L + len * 4, T + num * H, len, H), XStringFormats.Center);
+			num++;
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
+			g.DrawString(result_Type, TNR11, XBrushes.Black,
+				new XRect(L, T + num * H, len, H), XStringFormats.Center);
+			g.DrawString(isotope, TNR11, XBrushes.Black,
+				new XRect(L + len, T + num * H, len, H), XStringFormats.Center);
+			g.DrawString(sessionNumber, TNR11, XBrushes.Black,
+				new XRect(L + len * 2, T + num * H, len, H), XStringFormats.Center);
+			g.DrawString(result_Energy, TNR11, XBrushes.Black,
+				new XRect(L + len * 3, T + num * H, len, H), XStringFormats.Center);
+			g.DrawString(result_Si, TNR11, XBrushes.Black,
+				new XRect(L + len * 4, T + num * H, len, H), XStringFormats.Center);
+			num++;
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
+
+			g.DrawLine(pen, L, T, L, T + H * 2);
+			g.DrawLine(pen, L + len, T, L + len, T + H * 2);
+			g.DrawLine(pen, L + len * 2, T, L + len * 2, T + H * 2);
+			g.DrawLine(pen, L + len * 3, T, L + len * 3, T + H * 2);
+			g.DrawLine(pen, L + len * 4, T, L + len * 4, T + H * 2);
+			g.DrawLine(pen, L + len * 5, T, L + len * 5, T + H * 2);
+
+
+			doc.Save(@"../../../gennedPDF/3.pdf"); //путь, куда сохранять док
 		}
 
 		void Request4(string ionName)
 		{
 			IList<IList<object>> IonNames = ReadEntries(sheets[1], SpreadsheetID, $"!C2:C{action_count + 1}");
 			IList<IList<object>> CompanyNames = ReadEntries(sheets[1], SpreadsheetID, $"!B2:B{action_count + 1}");
-			IList<IList<object>> Time = ReadEntries(sheets[1], SpreadsheetID, $"!N2:N{action_count + 1}");
+			IList<IList<object>> TimeT = ReadEntries(sheets[1], SpreadsheetID, $"!N2:N{action_count + 1}");
 
 			List<string> exceptions = new List<string>() {"Переход","Смена", "Детектор", "Простой" };
 			Dictionary<string, double> WorkedTime = new Dictionary<string, double>();
@@ -337,13 +381,60 @@ namespace Ya_ustal
 					WorkedTime.Add(Convert.ToString(CompanyNames[i][0]), 0);
 				}
 				WorkedTime[Convert.ToString(CompanyNames[i][0])] 
-					+= TimeSpan.Parse(Convert.ToString(Time[i][0])).TotalSeconds;
+					+= TimeSpan.Parse(Convert.ToString(TimeT[i][0])).TotalSeconds;
 				string a = fromSecToStr(WorkedTime[Convert.ToString(CompanyNames[i][0])]);
 			}
 			//
 
 
+			int num = 0;
+			var doc = new PdfDocument();
+			XPen pen = new XPen(XColor.FromName("Black"), 0.5);
+			var page = new PdfPage();
+			doc.Pages.Add(page);
+			XGraphics g = XGraphics.FromPdfPage(page);
+			H = 13;
+			
+			
+			List<string> Ions = new List<string>();
+			List<string> Time = new List<string>();
+			foreach (var item in WorkedTime)
+			{
+				Ions.Add(item.Key);
+				Time.Add(fromSecToStr(item.Value));
+			}
+			int N = Ions.Count;
+		
 
+			g.DrawString("Тип иона: " + ionName, TNR11B, XBrushes.Black,
+				new XRect(0, T + num * H, page.Width, H), XStringFormats.Center);
+			num++;
+
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
+			g.DrawString("Название компании", TNR11B, XBrushes.Black,
+				new XRect(L, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			g.DrawString("Время", TNR11B, XBrushes.Black,
+				new XRect(L + (page.Width - L - R) / 2, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			num++;
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
+
+			for (int i = 0; i < N; i++)
+			{
+				g.DrawString(Ions[i], A8, XBrushes.Black,
+				new XRect(L, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+				g.DrawString(Time[i], A8, XBrushes.Black,
+					new XRect(L + (page.Width - L - R) / 2, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+				num++;
+				g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
+			}
+			num = 0;
+			g.DrawLine(pen, L, T + H, L, T + H * N + H * 2);
+			g.DrawLine(pen, L + (page.Width - L - R) / 2, T + H, L + (page.Width - L - R) / 2, T + H * N + H * 2);
+			g.DrawLine(pen, L + (page.Width - L - R), T + H, L + (page.Width - L - R), T + H * N + H * 2);
+
+
+
+			doc.Save(@"../../../gennedPDF/4.pdf"); //путь, куда сохранять док
 		}
 
 		void Request5(string ionName)
@@ -374,10 +465,37 @@ namespace Ya_ustal
 					res += TimeSpan.Parse(Convert.ToString(seanceTimeWithTB[i][0])).TotalSeconds;
 				}
 			}
-			int a = 5;
 
 
-			
+			H = 15; //высота строки
+			XPen pen = new XPen(XColor.FromName("Black"), 0.5);
+			int num = 0;
+			var doc = new PdfDocument();
+			var page = new PdfPage();
+			doc.Pages.Add(page);
+			XGraphics g = XGraphics.FromPdfPage(page);
+
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
+			g.DrawString("Тип иона:", TNR11B, XBrushes.Black,
+				new XRect(L, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			g.DrawString("Время:", TNR11B, XBrushes.Black,
+				new XRect(L + (page.Width - L - R) / 2, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			num++;
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
+			g.DrawString(ionName, A8, XBrushes.Black,
+				new XRect(L, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			g.DrawString(fromSecToStr(res), A8, XBrushes.Black,
+				new XRect(L + (page.Width - L - R) / 2, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			num++;
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
+
+			g.DrawLine(pen, L, T, L, T + H * 2);
+			g.DrawLine(pen, L + (page.Width - L - R) / 2, T, L + (page.Width - L - R) / 2, T + H * 2);
+			g.DrawLine(pen, L + (page.Width - L - R), T, L + (page.Width - L - R), T + H * 2);
+
+
+
+			doc.Save(@"../../../gennedPDF/5.pdf"); //путь, куда сохранять док
 		}
 		void Request6()
 		{
@@ -385,7 +503,33 @@ namespace Ya_ustal
 			IList<IList<object>> sessionStatus = ReadEntries(sheets[0], SpreadsheetID, $"!B{action_count + 1}:B{action_count + 1}");
 			string res_numb = sessionNumb[0][0].ToString();
 			string res_Status = sessionStatus[0][0].ToString();
+			H = 15; //высота строки
+			XPen pen = new XPen(XColor.FromName("Black"), 0.5);
+			int num = 0;
+			var doc = new PdfDocument();
+			var page = new PdfPage();
+			doc.Pages.Add(page);
+			XGraphics g = XGraphics.FromPdfPage(page);
 
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
+			g.DrawString("№ сеанса:", TNR11B, XBrushes.Black,
+				new XRect(L, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			g.DrawString("Статус:", TNR11B, XBrushes.Black,
+				new XRect(L + (page.Width - L - R) / 2, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			num++;
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
+			g.DrawString(res_numb, A8, XBrushes.Black,
+				new XRect(L, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			g.DrawString(res_Status, A8, XBrushes.Black,
+				new XRect(L + (page.Width - L - R) / 2, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			num++;
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
+
+			g.DrawLine(pen, L, T, L, T + H * 2);
+			g.DrawLine(pen, L + (page.Width - L - R) / 2, T, L + (page.Width - L - R) / 2, T + H * 2);
+			g.DrawLine(pen, L + (page.Width - L - R), T, L + (page.Width - L - R), T + H * 2);
+
+			doc.Save(@"../../../gennedPDF/6.pdf"); //путь, куда сохранять док
 		}
 		void Request7()
 		{
@@ -394,6 +538,34 @@ namespace Ya_ustal
 			string res_numb = sessionNumb[0][0].ToString();
 			string res_Status = sessionStart[0][0].ToString();
 
+			H = 15; //высота строки
+			XPen pen = new XPen(XColor.FromName("Black"), 0.5);
+			int num = 0;
+			var doc = new PdfDocument();
+			var page = new PdfPage();
+			doc.Pages.Add(page);
+			XGraphics g = XGraphics.FromPdfPage(page);
+
+
+
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
+			g.DrawString("№ сеанса:", TNR11B, XBrushes.Black,
+				new XRect(L, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			g.DrawString("Время начала:", TNR11B, XBrushes.Black,
+				new XRect(L + (page.Width - L - R) / 2, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			num++;
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
+			g.DrawString(res_numb, A8, XBrushes.Black,
+				new XRect(L, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			g.DrawString(res_Status, A8, XBrushes.Black,
+				new XRect(L + (page.Width - L - R) / 2, T + num * H, (page.Width - L - R) / 2, H), XStringFormats.Center);
+			num++;
+			g.DrawLine(pen, L, T + num * H, L + (page.Width - L - R), T + num * H);
+
+			g.DrawLine(pen, L, T, L, T + H * 2);
+			g.DrawLine(pen, L + (page.Width - L - R) / 2, T, L + (page.Width - L - R) / 2, T + H * 2);
+			g.DrawLine(pen, L + (page.Width - L - R), T, L + (page.Width - L - R), T + H * 2);
+			doc.Save(@"../../../gennedPDF/7.pdf"); //путь, куда сохранять док
 		}
 
 
@@ -413,7 +585,9 @@ namespace Ya_ustal
 			});
 			/*GenPDFTransitions("1-4");
 			GenPDFSeances("27-33", 130);*/
-			Request1("СПЭЛС");
+			Request5("Xe");
+			Request6();
+			Request7();
 		}
 
 
