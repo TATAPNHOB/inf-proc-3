@@ -35,7 +35,7 @@ namespace Ya_ustal
 		static readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
 		static readonly string ApplicationName = "Legistrators";//произвольно
 		static readonly string SpreadsheetID = "1HB4k716lcyBiOtpN_bk4RE7c4ZNK6QVwsYcOgl0HU4w";//в ссылке на лист
-		static readonly string[] sheets = new string[3] { "Data", "Timing", "Информация по иону" };//имя листа (не таблицы)
+		static readonly string[] sheets = new string[4] { "Data", "Timing", "Информация по иону", "Системное" };//имя листа (не таблицы)
 		static SheetsService service;//Объект для работы собсно с листиками
 
 
@@ -585,20 +585,27 @@ namespace Ya_ustal
 			});
 			/*GenPDFTransitions("1-4");
 			GenPDFSeances("27-33", 130);*/
-			Request5("Xe");
+			/*Request5("Xe");
 			Request6();
-			Request7();
+			Request7();*/
+			fillSystemsheet("1", "1", "1", "1", "1", "1");
 		}
 
+		void fillSystemsheet(string angle, string pressure, string vlazh, string temp, string iontype, string prot)
+        {
+			DeleteEntry(sheets[3], SpreadsheetID, $"!A2:H2");
 
+			List<object> objectList = new List<object>() {  angle, pressure, vlazh, temp,"","", iontype, prot };
+			CreateEntry(sheets[3], SpreadsheetID, $"!A:H", objectList);
+		}
 
-		static void CreateEntry(string sheet, string SpreadsheetID, string Range)
+		static void CreateEntry(string sheet, string SpreadsheetID, string Range, List<object> objectList)
 		{
 
 			string range = $"{sheet}{Range}";//Специфичный ренж, вставляется вниз, поэтому номер строки не нужен
 			ValueRange valueRange = new ValueRange();
 
-			List<object> objectList = new List<object>() { "Hello", "Pomogite", "Pls", "Ya", "Hochu", "Umeret" };
+			
 			valueRange.Values = new List<IList<object>> { objectList };//Собсно что писать будем
 
 			var appendRequest = service.Spreadsheets.Values.Append(valueRange, SpreadsheetID, range);
@@ -606,6 +613,10 @@ namespace Ya_ustal
 			//Опция парса, это стандартный парс, числовые переменные так и останутся, а строки могут парсится в даты, числа etc
 			var appendResponse = appendRequest.Execute();//Завершает реквест и передаёт результат для дальнейшей работы
 		}
+
+
+
+
 		static void UpdateEntry(string sheet, string SpreadsheetID, string Cell)
 		{
 			string range = $"{sheet}{Cell}";
@@ -618,6 +629,9 @@ namespace Ya_ustal
 			updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
 			var updateResponse = updateRequest.Execute();
 		}
+
+
+
 		static void DeleteEntry(string sheet, string SpreadsheetID, string Range)
 		{
 			string range = $"{sheet}{Range}";//Судя по тестам любой ренж, и строка не поднимается
