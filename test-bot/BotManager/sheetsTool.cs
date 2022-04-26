@@ -15,47 +15,33 @@ namespace BotManager
     internal class sheetsTool
     {//В Debug лежит жсончик со всеми нужными токенами, который сгенерен после создания credentials
         //в проекте на клауде
-        double L = 50; //отступ слева
-        double T = 30; //отступ сверху
-        double R = 50; //отступ справа
-        double StrBetw = 17; //между строками
-        double H = 12; //высота строки
-        double headerH; //высота названий слобцов для таблиц
-        double tab1rowH = 30; //высота строки с результатами для 1 таблицы
-        double tab23rowH = 14; //высота строки с результатами для 2 и 3 таблицы
-        double tab45rowH = 20; //высота строки с результатами для 2 и 3 таблицы
-        double tab;//доп отступ для таблицы
-        XPen pen = new XPen(XColor.FromName("Black"), 0.5);
-        double prevlens = 0; //сумма ширин предыдущих колонок
-        int num = 1;
-        XGraphics g;
-        PdfPage page;
-        PdfDocument doc;
-        int num_of_ions = 4;
-        int num_of_sessions = 1;
-        int action_count = 136;
-
         static readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
         static readonly string ApplicationName = "Legistrators";//произвольно
         static readonly string SpreadsheetID = "1HB4k716lcyBiOtpN_bk4RE7c4ZNK6QVwsYcOgl0HU4w";//в ссылке на лист
         static readonly string[] sheets = new string[3] { "Data", "Timing", "Информация по иону" };//имя листа (не таблицы)
         static SheetsService service;//Объект для работы собсно с листиками
+        static int num_of_ions = 4;
+        static int num_of_sessions = 1;
 
 
-        static readonly XFont TNR11 = new XFont("Times New Roman", 11);
-        static readonly XFont TNR16B = new XFont("Times New Roman", 16, XFontStyle.Bold);
-        static readonly XFont TNR11B = new XFont("Times New Roman", 11, XFontStyle.Bold);
-        static readonly XFont TNR12 = new XFont("Times New Roman", 12);
-        static readonly XFont A11 = new XFont("Arial", 11);
-        static readonly XFont TNR145B = new XFont("Times New Roman", 14.5, XFontStyle.Bold);
-        static readonly XFont TNR14 = new XFont("Times New Roman", 14);
-        static readonly XFont A8 = new XFont("Arial", 8);
+        static readonly XFont S_font = new XFont("Times New Roman", 11);//Шрифты для стандартного протокола
+        static readonly XFont S_font1 = new XFont("Times New Roman", 11, XFontStyle.Bold);
+        static readonly XFont S_font2 = new XFont("Times New Roman", 12);
+        static readonly XFont S_font3 = new XFont("Times New Roman", 8);
 
-        internal static void DirCreate (long chatId)
-        {
-            Directory.CreateDirectory(@$"..\..\..\..\PDFresult\{chatId}");
-        }
-        internal static void Proccess(long chatId, int folderNumb)
+        static readonly XFont US_font = new XFont("Arial", 11);//Для нестандартного
+        static readonly XFont US_font1 = new XFont("Times New Roman", 11, XFontStyle.Bold);
+        static readonly XFont US_font2 = new XFont("Times New Roman", 14);
+        static readonly XFont US_font3 = new XFont("Arial", 8);
+
+        static readonly XFont C_font = new XFont("Times New Roman", 11);
+        static readonly XFont C_font1 = new XFont("Times New Roman", 14);
+        static readonly XFont C_font2 = new XFont("Times New Roman", 12);
+        static readonly XFont C_font3 = new XFont("Times New Roman", 10);
+        static readonly XFont C_font4 = new XFont("Times New Roman", 8);
+
+       
+        internal static void Proccess(long chatId)
         {
             
             GoogleCredential credential;//Права 
@@ -73,14 +59,14 @@ namespace BotManager
             });
 
             //создание папки пользователя, чтобы именно там держать его пдфки, которые потом должны удалиться!
-           
-            Directory.CreateDirectory(@$"..\..\..\..\PDFresult\{chatId}\{folderNumb}");
-            GenPDFTransitions("1-4", 130, chatId, folderNumb);
-            GenPDFSeances("27-33", 130, chatId, folderNumb);
+            Directory.CreateDirectory(@$"..\..\..\..\PDFresult\{chatId}");
+
+            GenPDFTransitions("1-4", 130, chatId);
+            GenPDFSeances("27-33", 130, chatId);
 
 
         }
-        static void GenPDFTransitions(string action_interval, int action_count, long chatId, long folderNumb)
+        static void GenPDFTransitions(string action_interval, int action_count, long chatId)
         {
             List<int> row_num = new List<int>();
             IList<IList<object>> Search_index_list = ReadEntries(sheets[0], SpreadsheetID, $"!A3:A{action_count}"); //столбец с номерами
@@ -238,14 +224,14 @@ PdfDocument protocol3 = PdfSharp.Pdf.IO.PdfReader.Open(@"..\..\..\..\PDFtemplate
                     new XRect(117.5, 667, 56.5, 10), XStringFormats.Center);//продолжение время
 
                 //
-                doc.Save(@$"..\..\..\..\PDFresult\{chatId}\{folderNumb}\TestTransit{actual_index + 1}.pdf") ;
+                doc.Save(@$"..\..\..\..\PDFresult\{chatId}\TestTransit{actual_index + 1}.pdf") ;
 
                 //doc.Save($"C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\TestTransit{actual_index + 1}.pdf"); //путь, куда сохранять док
                 doc.Close();
                 protocol3.Close();
             }
         }
-        static void GenPDFSeances(string action_interval, int action_count, long chatId, int folderNumb)
+        static void GenPDFSeances(string action_interval, int action_count, long chatId)
         {
             List<int> row_num = new List<int>();
             IList<IList<object>> Search_index_list = ReadEntries(sheets[0], SpreadsheetID, $"!A3:A{action_count}"); //столбец с номерами
@@ -508,7 +494,7 @@ PdfDocument protocol3 = PdfSharp.Pdf.IO.PdfReader.Open(@"..\..\..\..\PDFtemplate
                         new XRect(667, 77, 115, 13), XStringFormats.Center); ; //ТЗЧ/...
                 }
                 
-                doc.Save(@$"..\..\..\..\PDFresult\{chatId}\{folderNumb}\Test{ actual_index + 1}.pdf"); //путь, куда сохранять док
+                doc.Save(@$"..\..\..\..\PDFresult\{chatId}\Test{ actual_index + 1}.pdf"); //путь, куда сохранять док
                 //doc.Save($"C:\\Users\\ivanb\\Desktop\\ХАКАТОН\\Test{actual_index + 1}.pdf"); //путь, куда сохранять док
                 doc.Close();
                 protocol1.Close();

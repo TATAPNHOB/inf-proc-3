@@ -36,6 +36,13 @@ Dictionary<long, botUser> currentUsers = new Dictionary<long, botUser>();
     3 - password request
     20 - report email request (1)
     21 - report attachment request
+
+
+    read codes:
+    101 - Request 1
+    102 - Request 2
+    ...
+
  */
 
 /*костыль 
@@ -55,14 +62,20 @@ ReplyKeyboardMarkup keyboard_Request = new(
 new KeyboardButton("Авторизация"));
 //клавиатура залогиненного пользователя
 ReplyKeyboardMarkup keyboard_Main = new(new[] {
-new KeyboardButton("Чтение"),
-new KeyboardButton("Добавление"),
-new KeyboardButton("Протоколы")});
+new KeyboardButton("Формирование протокола"),
+new KeyboardButton("Изменение")});
 
 ReplyKeyboardMarkup keyboard_yn = new(new[] {
 new KeyboardButton("Да"),
 new KeyboardButton("Нет"),});
 
+ReplyKeyboardMarkup keyboard_read = new(new[]
+    {
+        new KeyboardButton[] { "1", "2" },
+        new KeyboardButton[] { "3", "4" },
+        new KeyboardButton[] { "5", "6" },
+        new KeyboardButton[] { "7" },
+    });
 //
 ReplyKeyboardRemove keyboardToRemove = new ReplyKeyboardRemove();
 
@@ -133,68 +146,93 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
 //сценарий залогиненного пользователя
 async void DefaultScenery(long chatId, string messageText)
 {
+    switch (currentUsers[chatId].step.ToString())
+    {
+        case "1":
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Введите название компании",
+                replyMarkup: keyboardToRemove);
+            currentUsers[chatId].step = 101;
+            break;
+
+        case "101":
+            //sheetTool.Request1(messageText);
+            await SendReportAsync(chatId, currentUsers[chatId].email);
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Отправлено!",
+                replyMarkup: keyboard_Main);
+
+            currentUsers[chatId].step = 0;
+
+            break;
+
+        case "2":
+
+            break;
+        case "3":
+
+            break;
+        case "4":
+
+            break;
+        case "5":
+
+            break;
+        case "6":
+
+            break;
+        case "7":
+
+            break;
+
+        default:
+            break;
+    }
     if (currentUsers[chatId].step==20)
     {
         switch (messageText)
         {
             case "Да":
-
-
-                /*if (Directory.Exists(@$"..\..\..\..\PDFresult\{chatId}"))
+                if (Directory.Exists(@$"..\..\..\..\PDFresult\{chatId}"))
                 {
                     Directory.Delete(@$"..\..\..\..\PDFresult\{chatId}", true);
-                }*/
+                }
 
-                currentUsers[chatId].folderNumb++;
 
-                sheetsTool.Proccess(chatId, currentUsers[chatId].folderNumb);//генерация протоколов
+                sheetsTool.Proccess(chatId);//генерация пдфки
 
                 await SendReportAsync(chatId, currentUsers[chatId].email);//отправка её на почту
                 
                 break;
         }
 
-        sentMessage = await botClient.SendTextMessageAsync(
+        /*sentMessage = await botClient.SendTextMessageAsync(
                chatId: chatId,
-               text: "Выберите команду",
-               replyMarkup: keyboard_Main);
+               text: "Чтобы результат отправился в чат?",
+               replyMarkup: keyboard_yn);*/
         
         currentUsers[chatId].step = 0;
         return;
     }
 
-  /*  if (currentUsers[chatId].step == 21)
+    if (currentUsers[chatId].step == 21)
     { 
         
         switch (messageText)
         {
             case "Да":
-                *//*sentMessage = await botClient.SendDocumentAsync(
-    chatId: chatId,
-    document: @"..\..\..\..\PDFresult\Test{ actual_index + 1}.pdf");
-                sentMessage = await botClient.SendDocumentAsync(chatId: chatId,
-                    document: new InputTelegramFile(new FileStream(@"..\..\..\..\PDFresult\Test{ actual_index + 1}.pdf", FileMode.Open, FileAccess.Read))
-                    , null));*//*
+                
                 break;
         }
         currentUsers[chatId].step = 0;
         return;
-    }*/
+    }
 
     switch (messageText)
     {
-        //вот тут короче скопировать из Временные проекты и вставить, а остальное не менять!
-        /*case "Чтение":
-            sentMessage = await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: "Выбери действие:\n" +
-                "Информация по договору:\nОбщее время работы с разбивкой по ионам;\nВремя начала работ по договору.\nИнформация по иону:" +
-                "\n\nТип, энергия, пробег в кремнии;\nВыработанное время на ионе по каждому договору;\nВремя затраченное на технологические перерывы и простои." +
-                "\n\nТекущее состояние:\n№ сеанса и его статус;\nВремя начала данного сеанса;\n"*//*,
-                replyMarkup: *//*);
-            //Console.WriteLine("Запрошено: авторизация");
-            break;
-        case "Протоколы":
+        case "Формирование протокола":
             sentMessage = await botClient.SendTextMessageAsync(
                 chatId: chatId,
                 text: "Хотите, чтобы результат отправился на email?",
@@ -205,13 +243,25 @@ async void DefaultScenery(long chatId, string messageText)
             currentUsers[chatId].step = 20;
             break;
 
-        case "Добавление":
+
+        case "Чтение":
             sentMessage = await botClient.SendTextMessageAsync(
                 chatId: chatId,
-                text: "Пока ничего не делаю("*//*,
-                replyMarkup: *//*);
+                text: "Выберите нужный запрос: \n" +
+                        "Информация по договору:\n1) Общее время работы с разбивкой по ионам\n2) Время начала работ по договору\n\nИнформация по иону:\n3) Тип, энергия, пробег в кремнии\n\n4) Выработанное время на ионе по каждому договору; \n5) Время затраченное на технологические перерывы и простои.\n"+
+                        "Текущее состояние:\n6) № сеанса и его статус; \n7)Время начала данного сеанса;\n ",
+                replyMarkup: keyboard_read);
             //Console.WriteLine("Запрошено: авторизация");
-            break;*/
+            currentUsers[chatId].step = 100;
+            break;
+
+        case "Изменение":
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Пока ничего не делаю("/*,
+                replyMarkup: */);
+            //Console.WriteLine("Запрошено: авторизация");
+            break;
 
         default:
             sentMessage = await botClient.SendTextMessageAsync(
