@@ -30,6 +30,7 @@ namespace Ya_ustal
 		PdfDocument doc;
 		int num_of_ions = 4;
 		int num_of_sessions = 1;
+		int ionCount = 4;
 		int action_count = 136;
 
 		static readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
@@ -588,15 +589,142 @@ namespace Ya_ustal
 			/*Request5("Xe");
 			Request6();
 			Request7();*/
-			fillSystemsheet("1", "1", "1", "1", "1", "1");
+
+			fillDataPerehod("131", "a", "a", "a", "a",
+			"a", "НеВак--", "2", "2", "2", "2",
+			"2", "2", "2", "2", "2", "5", "5", "5", "8", "a", "a","OPA",
+			"b", "b", "b", "b", "b", "b", "b", "b", "b");
+
 		}
 
-		void fillSystemsheet(string angle, string pressure, string vlazh, string temp, string iontype, string prot)
-        {
-			DeleteEntry(sheets[3], SpreadsheetID, $"!A2:H2");
 
-			List<object> objectList = new List<object>() {  angle, pressure, vlazh, temp,"","", iontype, prot };
-			CreateEntry(sheets[3], SpreadsheetID, $"!A:H", objectList);
+		void fillDataPerehod (string d0, string d1, string d2, string d3, string d4,
+			string d5, string d6, string d7, string d8, string d9, string d10,
+			string d11, string d12, string d13, string d14,
+			string d15, string d16, string d17, string d18,
+			string d19, string d20,string d21, string d22,
+			string t1, string t2, string t3, string t4, string t5, string t6, string t7, string t8,
+			string t9
+			)
+		{
+			IList<IList<object>> table = ReadEntries(sheets[2], SpreadsheetID, $"!A2:O{ionCount + 1}");
+			IList<IList<object>> table2 = ReadEntries(sheets[0], SpreadsheetID, $"!A2:AH{action_count+1}");
+			
+			int TavgTD = 0;
+			if (d7 != "") TavgTD++;
+			if (d8 != "") TavgTD++;
+			if (d9 != "") TavgTD++;
+			if (d10 != "") TavgTD++;
+			if (d11 != "") TavgTD++;
+			if (d12 != "") TavgTD++;
+			if (d13 != "") TavgTD++;
+			if (d14 != "") TavgTD++;
+			if (d15 != "") TavgTD++;
+
+			double averageTD = 0;
+			if (TavgTD != 0)
+				averageTD = (Convert.ToDouble(d7) + Convert.ToDouble(d8) + Convert.ToDouble(d9)
+				+ Convert.ToDouble(d10) + Convert.ToDouble(d11)
+				+ Convert.ToDouble(d12) + Convert.ToDouble(d13)
+				+ Convert.ToDouble(d14) + Convert.ToDouble(d15)) /TavgTD;
+
+			int TavgOD = 0;
+
+			if (d16 != "") TavgOD++;
+			if (d17 != "") TavgOD++;
+			if (d18 != "") TavgOD++;
+			if (d19 != "") TavgOD++;
+
+			double averageOD = 0;
+			if (TavgOD!=0)
+			averageOD = (Convert.ToDouble(d16) + Convert.ToDouble(d17) + Convert.ToDouble(d18)
+				+ Convert.ToDouble(d19)) /TavgOD;
+
+			//d6
+			string temp = "";
+			string ionName = "";
+            for (int i = 0; i < ionCount; i++)
+            {
+				if (table[i][14].ToString() == d6)
+				{
+					temp = table[i][2].ToString();
+					ionName = table[i][0].ToString();
+					break;
+				}
+
+			}
+			double iter = 1;
+            for (int i = 0; i < action_count; i++)
+            {
+				if (table2[i][23].ToString() == "") continue;
+				int t = table2[i][23].ToString().IndexOf("-");
+				
+				if (table2[i][23].ToString().Substring(0,t)== table[ionCount-1][13].ToString() + "/" + temp)
+                {
+					if (Convert.ToDouble(table2[i][23].ToString().Substring(t + 1, table2[i][23].ToString().Length - t-1))
+						> iter)
+						iter = Convert.ToDouble(table2[i][23].ToString().Substring(t + 1, table2[i][23].ToString().Length - t - 1));
+				}
+				
+			}
+			iter++;
+			string codeProtocol = table[ionCount-1][13].ToString() + "/" + temp + "-" + iter;
+
+			IList<IList<object>> table3 = ReadEntries(sheets[3], SpreadsheetID, $"!A2:C2");
+
+			List<object> objectList = new List<object>() { d0,d1, d2, d3,d4,
+			d5, d6,averageTD ,d7, d8, d9,d10,
+			d11, d12, d13, d14,d15,averageOD,d16,d17,d18,d19,d20, codeProtocol,d21,
+			table3[0][0].ToString(),table3[0][1].ToString(),table3[0][2].ToString(),
+			d22};
+
+
+
+			
+
+
+			CreateEntry(sheets[0], SpreadsheetID, $"!A:AH", objectList);
+
+			List<object> objectList2 = new List<object>() { d0, d1, ionName, t1, "", "","", "",
+				"", t2, t3, t4, t5, t6, "", t7, t8, t9};
+			CreateEntry(sheets[1], SpreadsheetID, $"!A:R", objectList2);
+		}
+
+		//Заполнение Информации по иону
+		void fillIonInfo (string d1, string d2, string d3, string d4,
+			string d5, string d6, string d7, string d8, string d9, string d10,
+			string d11, string d12, string d13, string d14)
+        {//d13
+
+			int iter = 1;
+			IList<IList<object>> table = ReadEntries(sheets[2], SpreadsheetID, $"!A2:O{ionCount+1}");
+
+            for (int i = 0; i < ionCount; i++)
+            {
+				if (table[i][13].ToString()==d13) iter++; 
+            }
+
+			List<object> objectList = new List<object>() { d1, d2, iter, d3,d4,
+			d5, d6, d7, d8, d9,d10,
+			d11, d12, d13, d14};
+
+			CreateEntry(sheets[2], SpreadsheetID, $"!A:O", objectList);
+			ionCount++;
+		}
+
+		void fillSystemsheet1(string pressure, string vlazh, string temp)
+        {
+			
+			
+			UpdateEntry(sheets[3], SpreadsheetID, $"!A2", pressure);
+			UpdateEntry(sheets[3], SpreadsheetID, $"!B2", vlazh);
+			UpdateEntry(sheets[3], SpreadsheetID, $"!C2", temp);
+		}
+		void fillSystemsheet2(string iontype, string prot)
+		{
+			List<object> objectList = new List<object>() {iontype, prot };
+			UpdateEntry(sheets[3], SpreadsheetID, $"!D2", iontype);
+			UpdateEntry(sheets[3], SpreadsheetID, $"!E2", prot);
 		}
 
 		static void CreateEntry(string sheet, string SpreadsheetID, string Range, List<object> objectList)
@@ -617,12 +745,12 @@ namespace Ya_ustal
 
 
 
-		static void UpdateEntry(string sheet, string SpreadsheetID, string Cell)
+		static void UpdateEntry(string sheet, string SpreadsheetID, string Cell, string input)
 		{
 			string range = $"{sheet}{Cell}";
 			ValueRange valueRange = new ValueRange();
 
-			List<object> objectList = new List<object>() { "updated" };
+			List<object> objectList = new List<object>() { input };
 			valueRange.Values = new List<IList<object>> { objectList };
 
 			var updateRequest = service.Spreadsheets.Values.Update(valueRange, SpreadsheetID, range);
