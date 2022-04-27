@@ -66,7 +66,12 @@ new KeyboardButton("Авторизация"));
 ReplyKeyboardMarkup keyboard_Main = new(new[] {
 new KeyboardButton("Протоколы"),
 new KeyboardButton("Чтение"),
-new KeyboardButton("Изменение")});
+new KeyboardButton("Добавление")});
+
+ReplyKeyboardMarkup keyboard_Add = new(new[] {
+new KeyboardButton[] { "1", "2" },
+        new KeyboardButton[] { "3", "4" },
+        new KeyboardButton[] { "5"}});
 
 ReplyKeyboardMarkup keyboard_yn = new(new[] {
 new KeyboardButton("Да"),
@@ -154,7 +159,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
 async void DefaultScenery(long chatId, string messageText)
 {
     if (currentUsers[chatId].step == 222) return;
-    if (currentUsers[chatId].step==100)
+    if (currentUsers[chatId].step == 100)
     {
         switch (messageText)
         {
@@ -221,6 +226,68 @@ async void DefaultScenery(long chatId, string messageText)
 
         }
     }
+    if (currentUsers[chatId].step == 200)
+    {
+        switch (messageText)
+        {
+            //другие
+            case "1":
+                sentMessage = await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "Введите (через пробелы):\nНомер сеанса | Название организации | Начало сеанса | Конец сеанса | Продолжительность облучения | Продолжительность сеанса | Время с учетом ТП | Начало ТП | Конец ТП | Время ТП в сеансе",
+                    replyMarkup: keyboardToRemove);
+                currentUsers[chatId].step = 201;
+                break;
+            //смена
+            case "2":
+                sentMessage = await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "Введите (через пробелы):\nНомер сеанса | Название организации | Объект испытаний 1 | Объект испытаний 2 | Объект испытаний 3 | Объект испытаний 4 | ТД 1 | ТД 2 | ТД 3 | ТД 4 | ТД 5 | ТД 6 | ТД 7 | ТД 8 | ТД 9 | ОД 1 |  ОД 2 | ОД 3 | ОД 4 | Интенсивность потока | Температура в сеансе | Начало сеанса | Конец сеанса | Продолжительность облучения | Продолжительность сеанса | Время с учетом ТП | Начало ТП | Конец ТП | Время ТП в сеансе",
+                    replyMarkup: keyboardToRemove);
+                currentUsers[chatId].step = 202;
+                break;
+
+            //переход
+            case "3":
+                sentMessage = await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "Номер сеанса | Название организации | Объект испытаний 1 | Объект испытаний 2 | Объект испытаний 3 | Объект испытаний 4 | Код среды | ТД 1 | ТД 2 | ТД 3 | ТД 4 | ТД 5 | ТД 6 | ТД 7 | ТД 8 | ТД 9 | ОД 1 |  ОД 2 | ОД 3 | ОД 4 | Интенсивность потока | Угол облучения | Температура в сеансе | Начало сеанса | Конец сеанса | Продолжительность облучения | Продолжительность сеанса | Время с учетом ТП | Начало ТП | Конец ТП | Время ТП в сеансе",
+                    replyMarkup: keyboardToRemove);
+                currentUsers[chatId].step = 203;
+                break;
+
+            //сеанс обычный
+            case "4":
+                sentMessage = await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "Введите (через пробелы):\nНомер сеанса | Название организации | Объект испытаний 1 | Объект испытаний 2 | Объект испытаний 3 | Объект испытаний 4 | ТД 1 | ТД 2 | ТД 3 | ТД 4 | ТД 5 | ТД 6 | ТД 7 | ТД 8 | ТД 9 | ОД 1 |  ОД 2 | ОД 3 | ОД 4 | Интенсивность потока | Температура в сеансе | Начало сеанса | Конец сеанса | Продолжительность облучения | Продолжительность сеанса | Время с учетом ТП | Начало ТП | Конец ТП | Время ТП в сеансе",
+                    replyMarkup: keyboardToRemove);
+                currentUsers[chatId].step = 204;
+                break;
+
+            //информация по иону
+            case "5":
+                sentMessage = await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "Введите (через пробелы):\nНазвание иона | Изотоп | Материал дегрейдора, мкм | Толщина дегрейдора, мкм | Среда | \n Энергия E на поверхности объекта испытаний, МэВ / н | Погрешность задания энергии на объекте испытаний, МэВ / н | Пробег[Si], мкм |\n Погрешность задания пробега, мкм | ЛПЭ[Si], МэВ * см2 / мг | Погрешность задания ЛПЭ, МэВ * см ^ 2 / мг |\n Энергия E в ионопроводе, МэВ / н | номер сессии в году | Код среды ",
+                    replyMarkup: keyboardToRemove);
+                currentUsers[chatId].step = 205;
+                break;
+
+            //системный лист
+            case "6":
+                sentMessage = await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "Введите (через пробелы):\nДавление на исп. комплексе | Влажность на исп комплексе, % | Температура на исп. комплексе",
+                    replyMarkup: keyboardToRemove);
+                currentUsers[chatId].step = 205;
+                break;
+            default:
+                return;
+
+        }
+    }
+
     if (new List<string> { "1", "2", "3", "4", "5", "6", "7" }.Contains(messageText)) return;
     switch (currentUsers[chatId].step)
     {
@@ -233,7 +300,7 @@ async void DefaultScenery(long chatId, string messageText)
                 text: "Отправлено!",
                 replyMarkup: keyboard_Main);
             currentUsers[chatId].step = 0;
-            break;
+            return;
 
         case 102:
             sTool.Request2(messageText, chatId, currentUsers[chatId].folderNumb);
@@ -243,7 +310,7 @@ async void DefaultScenery(long chatId, string messageText)
                 text: "Отправлено!",
                 replyMarkup: keyboard_Main);
             currentUsers[chatId].step = 0;
-            break;
+            return;
 
         case 103:
             string ionName = messageText.Substring(0, 2);
@@ -258,7 +325,7 @@ async void DefaultScenery(long chatId, string messageText)
                 text: "Отправлено!",
                 replyMarkup: keyboard_Main);
             currentUsers[chatId].step = 0;
-            break;
+            return;
 
         case 104:
             sTool.Request4(messageText, chatId, currentUsers[chatId].folderNumb);
@@ -269,7 +336,7 @@ async void DefaultScenery(long chatId, string messageText)
                 replyMarkup: keyboard_Main);
 
             currentUsers[chatId].step = 0;
-            break;
+            return;
 
         case 105:
             sTool.Request5(messageText, chatId, currentUsers[chatId].folderNumb);
@@ -279,13 +346,106 @@ async void DefaultScenery(long chatId, string messageText)
                 text: "Отправлено!",
                 replyMarkup: keyboard_Main);
             currentUsers[chatId].step = 0;
-            break;
+            return;
 
-        
+
 
         default:
             break;
     }
+
+
+    /////////////////////////////////
+    string[] temp = new string[0];
+    switch (currentUsers[chatId].step)
+    {
+        case 201:
+            temp = messageText.Split(" ");
+            sTool.fillDataScam(temp[0], temp[1], temp[2], temp[3], temp[4],
+                temp[5], temp[6], temp[7], temp[8]);
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Добавлено!",
+                replyMarkup: keyboard_Main);
+            currentUsers[chatId].step = 0;
+            return;
+
+        case 202:
+            temp = messageText.Split(" ");
+            sTool.fillDataSmena(temp[0], temp[1], temp[2], temp[3], temp[4],
+                temp[5], temp[6], temp[7], temp[8], temp[9],
+                temp[10], temp[11], temp[12], temp[13], temp[14],
+                temp[15], temp[16], temp[17], temp[18], temp[19],
+                temp[20], temp[21], temp[22], temp[23], temp[24],
+                temp[25], temp[26], temp[27], temp[28], temp[29]);
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Добавлено!",
+                replyMarkup: keyboard_Main);
+            currentUsers[chatId].step = 0;
+            return;
+
+        case 203:
+            temp = messageText.Split(" ");
+            sTool.fillDataPerehod(temp[0], temp[1], temp[2], temp[3], temp[4],
+                temp[5], temp[6], temp[7], temp[8], temp[9],
+                temp[10], temp[11], temp[12], temp[13], temp[14],
+                temp[15], temp[16], temp[17], temp[18], temp[19],
+                temp[20], temp[21], temp[22], temp[23], temp[24],
+                temp[25], temp[26], temp[27], temp[28], temp[29], temp[30]);
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Добавлено!",
+                replyMarkup: keyboard_Main);
+            currentUsers[chatId].step = 0;
+            return; 
+
+        case 204:
+            temp = messageText.Split(" ");
+            sTool.fillDataSeance(temp[0], temp[1], temp[2], temp[3], temp[4],
+                temp[5], temp[6], temp[7], temp[8], temp[9],
+                temp[10], temp[11], temp[12], temp[13], temp[14],
+                temp[15], temp[16], temp[17], temp[18], temp[19],
+                temp[20], temp[21], temp[22], temp[23], temp[24],
+                temp[25], temp[26], temp[27], temp[28]);
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Добавлено!",
+                replyMarkup: keyboard_Main);
+
+            currentUsers[chatId].step = 0;
+            return;
+
+        case 205:
+            temp = messageText.Split(" ");
+            sTool.fillIonInfo(temp[0], temp[1], temp[2], temp[3], temp[4],
+                temp[5], temp[6], temp[7], temp[8], temp[9],temp[10],temp[11],temp[12],
+                temp[13]);
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Добавлено!",
+                replyMarkup: keyboard_Main);
+            currentUsers[chatId].step = 0;
+            return;
+
+        case 206:
+            sTool.Request5(messageText, chatId, currentUsers[chatId].folderNumb);
+            await SendReportAsync(chatId, currentUsers[chatId].email);
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Добавлено!",
+                replyMarkup: keyboard_Main);
+            currentUsers[chatId].step = 0;
+            return;
+
+
+
+        default:
+            break;
+    }
+    
+
+
 
     if (currentUsers[chatId].step==20)
     {
@@ -330,12 +490,20 @@ async void DefaultScenery(long chatId, string messageText)
                 //sTool.Proccess(chatId, currentUsers[chatId].folderNumb);//генерация пдфки
                 sTool.PDFsGEN_sean(messageText, chatId, currentUsers[chatId].folderNumb);
                 await SendReportAsync(chatId, currentUsers[chatId].email);//отправка её на почту
+                sentMessage = await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "Отправлено!",
+                    replyMarkup: keyboard_Main);
 
-                break;
+                return;
             case 32:
                 sTool.PDFsGEN_trans(messageText, chatId, currentUsers[chatId].folderNumb);
                 await SendReportAsync(chatId, currentUsers[chatId].email);//отправка её на почту
-                break;
+                sentMessage = await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "Отправлено!",
+                    replyMarkup: keyboard_Main);
+                return;
         }
         
 
@@ -367,7 +535,7 @@ async void DefaultScenery(long chatId, string messageText)
                 chatId: chatId,
                 text: "Какой протокол?",
                 replyMarkup: keyboard_protocol);
-
+            currentUsers[chatId].folderNumb++;
             currentUsers[chatId].step = 20;
             break;
 
@@ -379,16 +547,17 @@ async void DefaultScenery(long chatId, string messageText)
                         "Информация по договору:\n1) Общее время работы с разбивкой по ионам\n2) Время начала работ по договору\n\nИнформация по иону:\n3) Тип, энергия, пробег в кремнии\n4) Выработанное время на ионе по каждому договору; \n5) Время затраченное на технологические перерывы и простои.\n\n"+
                         "Текущее состояние:\n6) № сеанса и его статус; \n7)Время начала данного сеанса;\n ",
                 replyMarkup: keyboard_read);
-            //Console.WriteLine("Запрошено: авторизация");
+            currentUsers[chatId].folderNumb++;
             currentUsers[chatId].step = 100;
             break;
 
-        case "Изменение":
+        case "Добавление":
             sentMessage = await botClient.SendTextMessageAsync(
                 chatId: chatId,
-                text: "Пока ничего не делаю("/*,
-                replyMarkup: */);
-            //Console.WriteLine("Запрошено: авторизация");
+                text: "Выберите способ:\n1) Обычный сеанс\n2) Информация по иону\n3) Переход\n4) Смена\n5) Простой, детектор и другое",
+                replyMarkup: keyboard_Add);
+            currentUsers[chatId].step = 200;
+
             break;
 
         default:
@@ -554,7 +723,7 @@ async Task SendReportAsync(long chatId, string email)
     MailAddress from = new MailAddress("hehhahbot@gmail.com", "Hehebot");
     MailAddress to = new MailAddress(email);
     MailMessage m = new MailMessage(from, to);
-    foreach (var item in Directory.GetFiles(@$"..\..\..\..\PDFresult\{chatId}"))
+    foreach (var item in Directory.GetFiles(@$"..\..\..\..\PDFresult\{chatId}\{currentUsers[chatId].folderNumb}"))
     {
         m.Attachments.Add(new Attachment(item));
     }
@@ -563,7 +732,7 @@ async Task SendReportAsync(long chatId, string email)
     m.Subject = "Отчетный документ";
 
     //текст письма
-    m.Body = "Протокол допуска/протокол мониторинга";
+    m.Body = "-----------------------";
 
     //прикрепляем документ отчета
     
