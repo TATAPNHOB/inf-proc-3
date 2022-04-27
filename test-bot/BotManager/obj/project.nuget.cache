@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "d+F+ahrZF9wd9K/0Rfxvn43jG3D2wRYOci6n2Ft9Ckz2CYItLuFGvsyeEF5BD+anZcyAYohsgrP7s2zITiMrOQ==",
+  "dgSpecHash": "XSpDEdj7ng+bNZZ+0HgF/KcpLL1oXA9lffVW+demUHPcRTDbXPicPMs8zdSSyVRzboCfcXFaNoYPtf/NIiLMvA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Foly\\Desktop\\Временные проекты\\BotManager\\BotManager\\BotManager.csproj",
+  "projectFilePath": "C:\\Users\\Foly\\Documents\\GitHub\\inf-proc-3\\test-bot\\BotManager\\BotManager.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Foly\\.nuget\\packages\\google.apis\\1.57.0\\google.apis.1.57.0.nupkg.sha512",
     "C:\\Users\\Foly\\.nuget\\packages\\google.apis.auth\\1.57.0\\google.apis.auth.1.57.0.nupkg.sha512",

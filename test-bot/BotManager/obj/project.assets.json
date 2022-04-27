@@ -721,11 +721,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Foly\\Desktop\\Временные проекты\\BotManager\\BotManager\\BotManager.csproj",
+      "projectUniqueName": "C:\\Users\\Foly\\Documents\\GitHub\\inf-proc-3\\test-bot\\BotManager\\BotManager.csproj",
       "projectName": "BotManager",
-      "projectPath": "C:\\Users\\Foly\\Desktop\\Временные проекты\\BotManager\\BotManager\\BotManager.csproj",
+      "projectPath": "C:\\Users\\Foly\\Documents\\GitHub\\inf-proc-3\\test-bot\\BotManager\\BotManager.csproj",
       "packagesPath": "C:\\Users\\Foly\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Foly\\Desktop\\Временные проекты\\BotManager\\BotManager\\obj\\",
+      "outputPath": "C:\\Users\\Foly\\Documents\\GitHub\\inf-proc-3\\test-bot\\BotManager\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

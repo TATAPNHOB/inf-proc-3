@@ -32,3 +32,37 @@ C:\Users\Foly\Desktop\Временные проекты\BotManager\BotManager\bi
 C:\Users\Foly\Desktop\Временные проекты\BotManager\BotManager\bin\Debug\net6.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\Foly\Desktop\Временные проекты\BotManager\BotManager\bin\Debug\net6.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
 C:\Users\Foly\Desktop\Временные проекты\BotManager\BotManager\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\BotManager.exe
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\BotManager.deps.json
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\BotManager.runtimeconfig.json
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\BotManager.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\BotManager.pdb
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\Google.Apis.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\Google.Apis.Auth.PlatformServices.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\Google.Apis.Auth.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\Google.Apis.Core.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\Google.Apis.Sheets.v4.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\PdfSharp.Charting.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\PdfSharp.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\System.Drawing.Common.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\Telegram.Bot.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\Telegram.Bot.Extensions.Passport.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\Telegram.Bot.Extensions.Polling.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\de\PdfSharp.Charting.resources.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\de\PdfSharp.resources.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\obj\Debug\net6.0\BotManager.csproj.AssemblyReference.cache
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\obj\Debug\net6.0\BotManager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\obj\Debug\net6.0\BotManager.AssemblyInfoInputs.cache
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\obj\Debug\net6.0\BotManager.AssemblyInfo.cs
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\obj\Debug\net6.0\BotManager.csproj.CoreCompileInputs.cache
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\obj\Debug\net6.0\BotManager.csproj.CopyComplete
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\obj\Debug\net6.0\BotManager.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\obj\Debug\net6.0\refint\BotManager.dll
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\obj\Debug\net6.0\BotManager.pdb
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\obj\Debug\net6.0\BotManager.genruntimeconfig.cache
+C:\Users\Foly\Documents\GitHub\inf-proc-3\test-bot\BotManager\obj\Debug\net6.0\ref\BotManager.dll

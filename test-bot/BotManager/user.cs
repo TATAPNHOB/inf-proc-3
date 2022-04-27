@@ -18,6 +18,8 @@ namespace BotManager
 
         internal byte tries;
 
+        internal int folderNumb;
+
         internal DateTime banDate;
 
         //проверка, в бане ли челик
@@ -28,6 +30,9 @@ namespace BotManager
             this.id = id;
             step = 1;
             tries = 0;
+            folderNumb = 0;
+            sheetsTool sTool = new sheetsTool();
+            sTool.DirCreate(id);
         }
 
 
